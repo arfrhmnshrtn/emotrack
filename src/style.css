@@ -1,0 +1,9 @@
+@import "tailwindcss";
+@import "flowbite/src/themes/default";
+@source "../node_modules/flowbite";
+/* src/assets/styles.css atau main.css */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+
+body {
+  font-family: "Poppins", sans-serif;
+}
