@@ -1,3 +1,10 @@
+<script setup>
+import { ref } from "vue";
+
+const selectOptionAkun = ref("");
+console.log(selectOptionAkun.value);
+</script>
+
 <template>
   <section class="bg-white flex items-center justify-center">
     <div class="w-full p-6">
@@ -56,15 +63,16 @@
           <select
             id="status-akun"
             class="w-full rounded-lg p-2.5 text-sm text-gray-900 shadow focus:ring-blue-500 focus:border-blue-500"
+            v-model="selectOptionAkun"
             required
           >
             <option disabled selected value="">Pilih Status Akun</option>
-            <option value="user">Ibu Hamil</option>
-            <option value="admin">Keluarga</option>
+            <option value="ibu_hamil">Ibu Hamil</option>
+            <option value="keluarga">Keluarga</option>
           </select>
         </div>
 
-        <div>
+        <div v-if="selectOptionAkun === 'ibu_hamil'">
           <label for="hpht" class="block mb-1 text-sm font-medium text-gray-700"
             >Hari Pertama Haid Terakhir (HPHT)</label
           >
