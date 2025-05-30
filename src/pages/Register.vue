@@ -1,8 +1,60 @@
 <script setup>
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 
-const selectOptionAkun = ref("");
-console.log(selectOptionAkun.value);
+const router = useRouter();
+
+const username = ref("");
+const name = ref("");
+const date = ref("");
+const email = ref("");
+const password = ref("");
+const confirmPassword = ref("");
+const role = ref("");
+const hpht = ref("");
+const acceptTerms = ref(false);
+
+const handleRegister = async () => {
+  if (password.value !== confirmPassword.value) {
+    alert("Password dan Konfirmasi Password tidak cocok!");
+    return;
+  }
+
+  if (!acceptTerms.value) {
+    alert("Anda harus menyetujui Syarat dan Ketentuan.");
+    return;
+  }
+
+  const data = {
+    username: username.value,
+    name: name.value,
+    date: date.value,
+    email: email.value,
+    password: password.value,
+    role: role.value,
+    hpht: role.value === "ibu_hamil" ? hpht.value : null,
+  };
+
+  try {
+    const response = await fetch("http://localhost:3000/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      alert(result.message || "Gagal mendaftar");
+    } else {
+      alert("Registrasi berhasil!");
+      router.push("/");
+    }
+  } catch (error) {
+    console.error(error);
+    alert("Terjadi kesalahan saat registrasi");
+  }
+};
 </script>
 
 <template>
@@ -11,7 +63,7 @@ console.log(selectOptionAkun.value);
       <h1 class="text-2xl font-bold text-center text-gray-900 mb-6">
         Buat Akun
       </h1>
-      <form class="space-y-4">
+      <form class="space-y-4" @submit.prevent="handleRegister">
         <div>
           <label
             for="username"
@@ -19,11 +71,12 @@ console.log(selectOptionAkun.value);
             >Username</label
           >
           <input
+            v-model="username"
             type="text"
             id="username"
-            class="w-full shadow rounded-lg p-2.5 text-sm text-gray-900 focus:ring-blue-500 focus:border-blue-500"
-            placeholder="Masukan Username"
             required
+            class="w-full shadow rounded-lg p-2.5 text-sm text-gray-900"
+            placeholder="Masukan Username"
           />
         </div>
 
@@ -32,11 +85,12 @@ console.log(selectOptionAkun.value);
             >Nama</label
           >
           <input
+            v-model="name"
             type="text"
             id="nama"
-            class="w-full rounded-lg p-2.5 text-sm text-gray-900 shadow focus:ring-blue-500 focus:border-blue-500"
-            placeholder="Masukan Nama"
             required
+            class="w-full rounded-lg p-2.5 text-sm text-gray-900 shadow"
+            placeholder="Masukan Nama"
           />
         </div>
 
@@ -47,10 +101,11 @@ console.log(selectOptionAkun.value);
             >Tanggal Lahir</label
           >
           <input
+            v-model="date"
             type="date"
             id="tanggal-lahir"
-            class="w-full rounded-lg p-2.5 text-sm text-gray-900 shadow focus:ring-blue-500 focus:border-blue-500"
             required
+            class="w-full rounded-lg p-2.5 text-sm text-gray-900 shadow"
           />
         </div>
 
@@ -61,26 +116,27 @@ console.log(selectOptionAkun.value);
             >Status Akun</label
           >
           <select
+            v-model="role"
             id="status-akun"
-            class="w-full rounded-lg p-2.5 text-sm text-gray-900 shadow focus:ring-blue-500 focus:border-blue-500"
-            v-model="selectOptionAkun"
             required
+            class="w-full rounded-lg p-2.5 text-sm text-gray-900 shadow"
           >
-            <option disabled selected value="">Pilih Status Akun</option>
+            <option disabled value="">Pilih Status Akun</option>
             <option value="ibu_hamil">Ibu Hamil</option>
             <option value="keluarga">Keluarga</option>
           </select>
         </div>
 
-        <div v-if="selectOptionAkun === 'ibu_hamil'">
+        <div v-if="role === 'ibu_hamil'">
           <label for="hpht" class="block mb-1 text-sm font-medium text-gray-700"
             >Hari Pertama Haid Terakhir (HPHT)</label
           >
           <input
+            v-model="hpht"
             type="date"
             id="hpht"
-            class="w-full rounded-lg p-2.5 text-sm text-gray-900 shadow focus:ring-blue-500 focus:border-blue-500"
             required
+            class="w-full rounded-lg p-2.5 text-sm text-gray-900 shadow"
           />
         </div>
 
@@ -91,11 +147,12 @@ console.log(selectOptionAkun.value);
             >Email</label
           >
           <input
+            v-model="email"
             type="email"
             id="email"
-            placeholder="name@company.com"
-            class="w-full rounded-lg p-2.5 text-sm text-gray-900 shadow focus:ring-blue-500 focus:border-blue-500"
             required
+            class="w-full rounded-lg p-2.5 text-sm text-gray-900 shadow"
+            placeholder="name@company.com"
           />
         </div>
 
@@ -106,11 +163,12 @@ console.log(selectOptionAkun.value);
             >Password</label
           >
           <input
+            v-model="password"
             type="password"
             id="password"
-            placeholder="••••••••"
-            class="w-full rounded-lg p-2.5 text-sm text-gray-900 shadow focus:ring-blue-500 focus:border-blue-500"
             required
+            class="w-full rounded-lg p-2.5 text-sm text-gray-900 shadow"
+            placeholder="••••••••"
           />
         </div>
 
@@ -121,19 +179,21 @@ console.log(selectOptionAkun.value);
             >Konfirmasi Password</label
           >
           <input
+            v-model="confirmPassword"
             type="password"
             id="confirm-password"
-            placeholder="••••••••"
-            class="w-full rounded-lg p-2.5 text-sm text-gray-900 shadow focus:ring-blue-500 focus:border-blue-500"
             required
+            class="w-full rounded-lg p-2.5 text-sm text-gray-900 shadow"
+            placeholder="••••••••"
           />
         </div>
 
         <div class="flex items-center">
           <input
+            v-model="acceptTerms"
             id="terms"
             type="checkbox"
-            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded"
             required
           />
           <label for="terms" class="ml-2 text-sm text-gray-600">

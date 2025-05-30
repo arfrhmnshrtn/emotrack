@@ -1,6 +1,29 @@
 <script setup>
 import { Icon } from "@iconify/vue";
 import NavbarBottom from "../components/NavbarBottom.vue";
+
+import { useRouter } from "vue-router";
+import { ref, onMounted } from "vue";
+const router = useRouter();
+
+const dataUser = ref({});
+
+const getUser = () => {
+  const user = localStorage.getItem("user");
+  if (user) {
+    const userJson = JSON.parse(user);
+    dataUser.value = userJson;
+  }
+};
+
+const logout = () => {
+  localStorage.removeItem("user");
+  router.push("/");
+};
+
+onMounted(() => {
+  getUser();
+});
 </script>
 
 <template>
@@ -13,14 +36,16 @@ import NavbarBottom from "../components/NavbarBottom.vue";
     </div>
 
     <!-- Name -->
-    <h2 class="text-xl font-semibold text-pink-700">Halo, Ibu Hamil 🌸</h2>
+    <h2 class="text-xl font-semibold text-pink-700">
+      Halo, {{ dataUser.name }} 🌸
+    </h2>
     <p class="text-sm text-gray-500 mb-6">Profil pengguna & pengaturan akun</p>
 
     <!-- Info Card -->
     <div class="w-full bg-white rounded-xl shadow-md p-4 space-y-3">
       <div class="flex justify-between items-center">
         <span class="text-gray-600">Nama</span>
-        <span class="font-medium text-gray-800">Ibu Aisyah</span>
+        <span class="font-medium text-gray-800">{{ dataUser.name }}</span>
       </div>
       <div class="flex justify-between items-center">
         <span class="text-gray-600">Usia Kehamilan</span>
@@ -28,7 +53,7 @@ import NavbarBottom from "../components/NavbarBottom.vue";
       </div>
       <div class="flex justify-between items-center">
         <span class="text-gray-600">Email</span>
-        <span class="font-medium text-gray-800">ibuaisyah@email.com</span>
+        <span class="font-medium text-gray-800">{{ dataUser.email }}</span>
       </div>
     </div>
 
@@ -48,6 +73,7 @@ import NavbarBottom from "../components/NavbarBottom.vue";
       </button>
       <button
         class="w-full bg-pink-500 text-white px-4 py-3 rounded-xl shadow hover:bg-pink-600 transition"
+        @click="logout"
       >
         <Icon icon="mdi:logout" class="w-5 h-5 inline mr-2" />
         Keluar

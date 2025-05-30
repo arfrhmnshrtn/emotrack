@@ -1,14 +1,35 @@
 <script setup>
 import { Icon } from "@iconify/vue";
-import Artikel from "../components/Artikel.vue"
+import Artikel from "../components/Artikel.vue";
 import NavbarBottom from "../components/NavbarBottom.vue";
+import { onMounted, ref } from "vue";
+
+const userName = ref("");
+
+const getUser = () => {
+  const user = localStorage.getItem("user");
+  if (user) {
+    const userJson = JSON.parse(user);
+    userName.value = userJson.name;
+  }
+};
+
+const cutName = () => {
+  const name = userName.value;
+  const splitName = name.split(" ");
+  return splitName[0];
+};
+
+onMounted(() => {
+  getUser();
+});
 </script>
 <template>
   <div class="p-5 bg-gray-50 min-h-screen font-poppins">
     <!-- Header -->
     <div class="flex items-center justify-between mb-6">
       <h1 class="text-2xl font-medium text-gray-800">
-        Halo, <span class="font-bold text-pink-600">Arief</span>
+        Halo, <span class="font-bold text-pink-600">{{ cutName() }}</span>
       </h1>
       <div class="flex items-center space-x-4 text-gray-500">
         <Icon
@@ -16,12 +37,6 @@ import NavbarBottom from "../components/NavbarBottom.vue";
           class="text-yellow-500 hover:text-yellow-500"
           width="26"
           height="26"
-        />
-        <Icon
-          icon="mdi:account-circle-outline"
-          class="hover:text-blue-500"
-          width="28"
-          height="28"
         />
       </div>
     </div>

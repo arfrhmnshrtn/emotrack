@@ -10,16 +10,30 @@ import Profile from "../pages/Profile.vue";
 import Artikel from "../pages/Artikel.vue";
 import Grafik from "../pages/Grafik.vue";
 import ChatBot from "../pages/ChatBot.vue";
+import Dashboard from "../layout/Home.vue";
 
 const routes = [
-  { path: "/", name: "Login", component: Login },
-  { path: "/dashboard", name: "Home", component: Home },
-  { path: "/register", name: "Register", component: Register },
+  { path: "/", name: "Login", component: Login, meta: { public: true } },
+  {
+    path: "/register",
+    name: "Register",
+    component: Register,
+    meta: { public: true },
+  },
+  {
+    path: "/dashboard",
+    name: "Home",
+    component: Home,
+  },
   { path: "/gizi", name: "Gizi", component: Gizi },
   { path: "/jurnal", name: "Jurnal", component: Jurnal },
   { path: "/mood", name: "Mood", component: Mood },
   { path: "/profile", name: "Profile", component: Profile },
-  { path: "/artikel", name: "Artikel", component: Artikel },
+  {
+    path: "/artikel",
+    name: "Artikel",
+    component: Artikel,
+  },
   { path: "/grafik", name: "Grafik", component: Grafik },
   { path: "/chatbot", name: "ChatBot", component: ChatBot },
 ];
@@ -27,6 +41,16 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  const user = JSON.parse(localStorage.getItem("user"));
+  const isPublic = to.matched.some((record) => record.meta.public);
+
+  if (!isPublic && !user) {
+    return next("/");
+  }
+  next();
 });
 
 export default router;

@@ -6,7 +6,6 @@ const route = useRoute();
 const currentName = route.name;
 
 const isActive = (name) => currentName === name;
-console.log(currentName);
 </script>
 
 <template>

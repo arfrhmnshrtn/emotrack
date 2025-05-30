@@ -1,15 +1,48 @@
 <script setup>
 import SplashScreen from "./SplashScreen.vue";
 import { onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
 
-const username = ref("");
+const email = ref("");
 const password = ref("");
 const splash = ref(true);
+const router = useRouter();
+const errorMessage = ref("");
 
-const handleLogin = () => {
-  console.log("Username:", username.value);
-  console.log("Password:", password.value);
-  // Lanjutkan logika autentikasi di sini (misal ke API)
+const handleLogin = async () => {
+  if (!email.value || !password.value) {
+    errorMessage.value = "Email dan password harus diisi.";
+    return;
+  }
+
+  try {
+    const response = await fetch("http://localhost:3000/api/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email.value,
+        password: password.value,
+      }),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      errorMessage.value = result.message;
+      return;
+    }
+
+    localStorage.setItem("user", JSON.stringify(result.user));
+    // alert("Login berhasil!");
+    // errorMessage value = "";
+    router.push("/dashboard");
+  } catch (error) {
+    console.error(error);
+    // alert("Terjadi kesalahan saat menghubungi server.");
+    errorMessage.value = "Terjadi kesalahan saat menghubungi server.";
+  }
 };
 
 function showSplash() {
@@ -36,10 +69,10 @@ onMounted(() => {
       <form @submit.prevent="handleLogin" class="space-y-4">
         <div>
           <input
-            v-model="username"
-            type="text"
-            id="username"
-            placeholder="Username"
+            v-model="email"
+            type="email"
+            id="email"
+            placeholder="Email"
             class="w-full rounded-lg p-3 text-sm text-gray-900 bg-white shadow focus:ring-blue-500 focus:border-blue-500"
             required
           />
@@ -56,24 +89,27 @@ onMounted(() => {
           />
         </div>
 
+        <div>
+          <p class="text-sm text-red-500 italic">{{ errorMessage }}</p>
+        </div>
+
         <button
           type="submit"
-          class="w-full text-xl bg-blue-800 hover:bg-blue-900 text-white rounded-lg px-5 py-3"
+          class="w-full text-xl bg-pink-500 hover:bg-pink-600 cursor-pointer text-white rounded-lg px-5 py-3"
         >
-          <router-link to="/dashboard"> Masuk </router-link>
+          Masuk
         </button>
       </form>
       <div class="flex mt-2">
         <p>
           Belum punya akun?
-          <span
-            ><router-link to="/register" class="text-blue-800 hover:underline"
-              >Daftar di sini</router-link
-            ></span
-          >
+          <span>
+            <router-link to="/register" class="text-pink-500 hover:underline">
+              Daftar di sini
+            </router-link>
+          </span>
         </p>
       </div>
-      <!-- <router-link to="/dashboard">Home</router-link> -->
     </div>
   </section>
 </template>
