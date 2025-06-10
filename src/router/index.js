@@ -11,6 +11,9 @@ import Artikel from "../pages/Artikel.vue";
 import Grafik from "../pages/Grafik.vue";
 import ChatBot from "../pages/ChatBot.vue";
 import Dashboard from "../layout/Home.vue";
+import Settings from "../pages/Settings.vue";
+import ViewJurnal from "../pages/ViewJurnal.vue";
+import DetailArtikel from "../pages/DetailaArtikel.vue";
 
 const routes = [
   { path: "/", name: "Login", component: Login, meta: { public: true } },
@@ -36,6 +39,21 @@ const routes = [
   },
   { path: "/grafik", name: "Grafik", component: Grafik },
   { path: "/chatbot", name: "ChatBot", component: ChatBot },
+  {
+    path: "/settings",
+    name: "Settings",
+    component: Settings,
+  },
+  {
+    path: "/viewjurnal",
+    name: "ViewJurnal",
+    component: ViewJurnal,
+  },
+  {
+    path: "/detailartikel",
+    name: "DetailArtikel",
+    component: DetailArtikel,
+  },
 ];
 
 const router = createRouter({

@@ -1,8 +1,26 @@
 <template>
-  <div class="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg ">
-    <h1 class="text-2xl font-bold text-pink-600 text-center mb-6">
-      Catatan Harian Ibu Hamil
-    </h1>
+  <div class="max-w-md mx-auto p-6 bg-white rounded-lg">
+    <!-- Header dengan Icon Back -->
+    <div class="flex items-center space-x-2 mb-10">
+      <button @click="goBack" class="text-gray-600 hover:text-gray-800">
+        <!-- Icon Back -->
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15 19l-7-7 7-7"
+          />
+        </svg>
+      </button>
+      <h2 class="text-xl font-semibold text-gray-800">Jurnal Harian</h2>
+    </div>
 
     <form @submit.prevent="submitJurnal" class="space-y-4">
       <!-- Input Tanggal -->
@@ -32,41 +50,60 @@
         ></textarea>
       </div>
 
+      <!-- Notifikasi -->
+      <div
+        v-if="submitted"
+        class="mt-4 p-3 bg-green-100 text-green-700 rounded-md text-center"
+      >
+        Catatan berhasil disimpan!
+      </div>
+
       <!-- Tombol Simpan -->
       <div class="text-right">
         <button
           type="submit"
-          class="bg-pink-500 text-white px-4 py-2 rounded-md hover:bg-pink-600 transition"
+          :disabled="loading"
+          class="bg-pink-500 text-white px-4 py-2 rounded-md hover:bg-pink-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Simpan
+          <span v-if="loading">Menyimpan...</span>
+          <span v-else>Simpan</span>
         </button>
       </div>
     </form>
-
-    <div
-      v-if="submitted"
-      class="mt-4 p-3 bg-green-100 text-green-700 rounded-md text-center"
-    >
-      Catatan berhasil disimpan!
-    </div>
   </div>
 </template>
 
 <script setup>
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 
 const tanggal = ref("");
 const catatan = ref("");
 const submitted = ref(false);
+const loading = ref(false);
+
+const router = useRouter();
 
 const submitJurnal = () => {
-  console.log("Tanggal:", tanggal.value);
-  console.log("Catatan:", catatan.value);
-  submitted.value = true;
+  loading.value = true;
 
-  // Reset notifikasi setelah 3 detik
+  // Simulasi loading 3 detik
   setTimeout(() => {
-    submitted.value = false;
+    console.log("Tanggal:", tanggal.value);
+    console.log("Catatan:", catatan.value);
+
+    loading.value = false;
+    submitted.value = true;
+
+    // Reset dan redirect jika perlu
+    setTimeout(() => {
+      submitted.value = false;
+      router.push("/viewjurnal"); // Navigasi setelah selesai
+    }, 1500);
   }, 3000);
+};
+
+const goBack = () => {
+  router.go(-1); // Navigasi ke halaman sebelumnya
 };
 </script>

@@ -7,12 +7,36 @@ import { ref, onMounted } from "vue";
 const router = useRouter();
 
 const dataUser = ref({});
+const showConfirm = ref(false); // Pop-up status
 
 const getUser = () => {
   const user = localStorage.getItem("user");
+  // console.log(user);
   if (user) {
     const userJson = JSON.parse(user);
     dataUser.value = userJson;
+  }
+};
+
+const countUsiaKehamilan = () => {
+  const user = localStorage.getItem("user");
+  if (user) {
+    const userJson = JSON.parse(user);
+    const hpht = new Date(userJson.hpht);
+    const today = new Date();
+
+    // Hitung selisih dalam milidetik
+    const selisihMs = today - hpht;
+
+    // Ubah ke hari
+    const selisihHari = Math.floor(selisihMs / (1000 * 60 * 60 * 24));
+
+    // Ubah ke minggu
+    const usiaKehamilanMinggu = Math.floor(selisihHari / 7);
+
+    return usiaKehamilanMinggu;
+  } else {
+    return 0; // Jika user tidak ditemukan
   }
 };
 
@@ -49,7 +73,9 @@ onMounted(() => {
       </div>
       <div class="flex justify-between items-center">
         <span class="text-gray-600">Usia Kehamilan</span>
-        <span class="font-medium text-gray-800">24 Minggu</span>
+        <span class="font-medium text-gray-800"
+          >{{ countUsiaKehamilan() }} Minggu</span
+        >
       </div>
       <div class="flex justify-between items-center">
         <span class="text-gray-600">Email</span>
@@ -59,25 +85,54 @@ onMounted(() => {
 
     <!-- Action Buttons -->
     <div class="w-full mt-6 space-y-4">
-      <button
-        class="w-full bg-white flex items-center gap-3 px-4 py-3 rounded-xl shadow hover:bg-pink-100 transition"
-      >
-        <Icon icon="mdi:cog" class="text-pink-500 w-5 h-5" />
-        <span>Pengaturan Akun</span>
-      </button>
+      <router-link to="/settings" class="mb-2">
+        <button
+          class="w-full bg-white flex mb-2 items-center gap-3 px-4 py-3 rounded-xl shadow hover:bg-pink-100 transition"
+        >
+          <Icon icon="mdi:cog" class="text-pink-500 w-5 h-5" />
+          <span>Pengaturan Akun</span>
+        </button>
+      </router-link>
+
       <button
         class="w-full bg-white flex items-center gap-3 px-4 py-3 rounded-xl shadow hover:bg-pink-100 transition"
       >
         <Icon icon="mdi:help-circle-outline" class="text-pink-500 w-5 h-5" />
         <span>Bantuan</span>
       </button>
+
+      <!-- Tombol Logout -->
       <button
         class="w-full bg-pink-500 text-white px-4 py-3 rounded-xl shadow hover:bg-pink-600 transition"
-        @click="logout"
+        @click="showConfirm = true"
       >
         <Icon icon="mdi:logout" class="w-5 h-5 inline mr-2" />
         Keluar
       </button>
+    </div>
+
+    <!-- Pop-up Konfirmasi -->
+    <div
+      v-if="showConfirm"
+      class="fixed inset-0 bg-opacity-50 flex items-center justify-center z-50"
+    >
+      <div class="bg-white p-6 rounded-xl shadow-xl text-center max-w-xs">
+        <p class="text-lg mb-4 text-gray-800">Yakin ingin keluar?</p>
+        <div class="flex justify-center gap-4">
+          <button
+            @click="showConfirm = false"
+            class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 transition"
+          >
+            Batal
+          </button>
+          <button
+            @click="logout"
+            class="bg-pink-500 text-white px-4 py-2 rounded hover:bg-pink-600 transition"
+          >
+            Keluar
+          </button>
+        </div>
+      </div>
     </div>
 
     <NavbarBottom />

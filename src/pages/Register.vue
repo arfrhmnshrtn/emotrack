@@ -60,7 +60,7 @@ const handleRegister = async () => {
 <template>
   <section class="bg-white flex items-center justify-center">
     <div class="w-full p-6">
-      <h1 class="text-2xl font-bold text-center text-gray-900 mb-6">
+      <h1 class="text-2xl font-bold text-center text-pink-500 mb-6">
         Buat Akun
       </h1>
       <form class="space-y-4" @submit.prevent="handleRegister">
@@ -193,12 +193,12 @@ const handleRegister = async () => {
             v-model="acceptTerms"
             id="terms"
             type="checkbox"
-            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded"
+            class="w-4 h-4 text-pink-500 bg-gray-100 border-gray-300 rounded"
             required
           />
           <label for="terms" class="ml-2 text-sm text-gray-600">
             Saya menerima
-            <a href="#" class="text-blue-600 hover:underline"
+            <a href="#" class="text-pink-500 hover:underline"
               >Syarat dan Ketentuan</a
             >
           </label>
@@ -206,14 +206,14 @@ const handleRegister = async () => {
 
         <button
           type="submit"
-          class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg px-5 py-2.5 text-sm"
+          class="w-full bg-pink-500 hover:bg-pink-600 text-white font-semibold rounded-lg px-5 py-2.5 text-sm"
         >
           Buat Akun
         </button>
 
         <p class="text-sm text-center text-gray-600">
           Sudah punya akun?
-          <router-link to="/" class="text-blue-600 hover:underline"
+          <router-link to="/" class="text-pink-500 hover:underline"
             >Login di sini</router-link
           >
         </p>
