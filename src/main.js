@@ -4,6 +4,8 @@ import App from "./App.vue";
 import router from "./router";
 
 const app = createApp(App);
+// app.use(IonicVue);
+// app.use(Icon);
 app.use(router);
 app.mount("#app");
 

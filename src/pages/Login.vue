@@ -7,13 +7,45 @@ const email = ref("");
 const password = ref("");
 const splash = ref(true);
 const router = useRouter();
-const errorMessage = ref("");
+const errors = ref({
+  email: "",
+  password: "",
+  general: "",
+});
+
+const validateForm = () => {
+  let isValid = true;
+
+  // Reset errors
+  errors.value = {
+    email: "",
+    password: "",
+    general: "",
+  };
+
+  // Email validation
+  if (!email.value) {
+    errors.value.email = "Email harus diisi";
+    isValid = false;
+  } else if (!/^\S+@\S+\.\S+$/.test(email.value)) {
+    errors.value.email = "Format email tidak valid";
+    isValid = false;
+  }
+
+  // Password validation
+  if (!password.value) {
+    errors.value.password = "Password harus diisi";
+    isValid = false;
+  } else if (password.value.length < 6) {
+    errors.value.password = "Password minimal 6 karakter";
+    isValid = false;
+  }
+
+  return isValid;
+};
 
 const handleLogin = async () => {
-  if (!email.value || !password.value) {
-    errorMessage.value = "Email dan password harus diisi.";
-    return;
-  }
+  if (!validateForm()) return;
 
   try {
     const response = await fetch("http://localhost:3000/api/auth/login", {
@@ -30,18 +62,15 @@ const handleLogin = async () => {
     const result = await response.json();
 
     if (!response.ok) {
-      errorMessage.value = result.message;
+      errors.value.general = result.message || "Login gagal";
       return;
     }
 
     localStorage.setItem("user", JSON.stringify(result.user));
-    // alert("Login berhasil!");
-    // errorMessage value = "";
     router.push("/dashboard");
   } catch (error) {
     console.error(error);
-    // alert("Terjadi kesalahan saat menghubungi server.");
-    errorMessage.value = "Terjadi kesalahan saat menghubungi server.";
+    errors.value.general = "Terjadi kesalahan saat menghubungi server.";
   }
 };
 
@@ -74,8 +103,11 @@ onMounted(() => {
             id="email"
             placeholder="Email"
             class="w-full rounded-lg p-3 text-sm text-gray-900 bg-white shadow focus:ring-blue-500 focus:border-blue-500"
-            required
+            :class="{ 'border-red-500': errors.email }"
           />
+          <p v-if="errors.email" class="text-sm text-red-500 mt-1">
+            {{ errors.email }}
+          </p>
         </div>
 
         <div>
@@ -85,12 +117,15 @@ onMounted(() => {
             id="password"
             placeholder="Password"
             class="w-full rounded-lg p-3 text-sm text-gray-900 bg-white shadow focus:ring-blue-500 focus:border-blue-500"
-            required
+            :class="{ 'border-red-500': errors.password }"
           />
+          <p v-if="errors.password" class="text-sm text-red-500 mt-1">
+            {{ errors.password }}
+          </p>
         </div>
 
-        <div>
-          <p class="text-sm text-red-500 italic">{{ errorMessage }}</p>
+        <div v-if="errors.general">
+          <p class="text-sm text-red-500 italic">{{ errors.general }}</p>
         </div>
 
         <button

@@ -1,5 +1,9 @@
 <script setup>
 import { ref } from "vue";
+import { Icon } from "@iconify/vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const moods = [
   { icon: "😄", label: "Senang" },
@@ -23,23 +27,11 @@ function goBack() {
 <template>
   <!-- Header dengan Icon Back -->
   <div class="flex items-center space-x-2 mb-5 mt-8 ml-4">
-    <button @click="goBack" class="text-gray-600 hover:text-gray-800">
-      <!-- Icon Back -->
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-6 w-6"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M15 19l-7-7 7-7"
-        />
-      </svg>
-    </button>
+    <Icon
+      icon="mdi:arrow-left"
+      class="w-6 h-6 cursor-pointer text-gray-700"
+      @click="router.back()"
+    />
     <h2 class="text-xl font-semibold text-gray-800">Jurnal Harian</h2>
   </div>
 

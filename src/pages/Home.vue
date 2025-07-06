@@ -14,7 +14,7 @@ const getUser = () => {
   }
 };
 
-const cutName = () => {
+const cutNameUser = () => {
   const name = userName.value;
   const splitName = name.split(" ");
   return splitName[0];
@@ -29,16 +29,18 @@ onMounted(() => {
     <!-- Header -->
     <div class="flex items-center justify-between mb-6">
       <h1 class="text-2xl font-medium text-gray-800">
-        Halo, <span class="font-bold text-pink-600">{{ cutName() }}</span>
+        Halo, <span class="font-bold text-pink-600">{{ cutNameUser() }}</span>
       </h1>
-      <div class="flex items-center space-x-4 text-gray-500">
-        <Icon
-          icon="mdi:bell"
-          class="text-yellow-500 hover:text-yellow-500"
-          width="26"
-          height="26"
-        />
-      </div>
+      <router-link to="/notifikasi">
+        <div class="flex items-center space-x-4 text-gray-500">
+          <Icon
+            icon="mdi:bell"
+            class="text-yellow-500 hover:text-yellow-500"
+            width="26"
+            height="26"
+          />
+        </div>
+      </router-link>
     </div>
 
     <!-- Fitur -->

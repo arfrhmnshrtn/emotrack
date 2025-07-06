@@ -1,3 +1,37 @@
+<script>
+export default {
+  data() {
+    return {
+      jurnalHarian: [
+        {
+          tanggal: "2025-06-10",
+          keluhan: "Saya merasa mual sepanjang hari dan sulit makan.",
+          rekomendasi:
+            "Cobalah makan dalam porsi kecil tetapi sering, hindari makanan berminyak, dan pastikan cukup minum air putih.",
+        },
+        {
+          tanggal: "2025-06-09",
+          keluhan: "Saya mengalami nyeri punggung ketika duduk terlalu lama.",
+          rekomendasi:
+            "Lakukan peregangan ringan secara berkala dan gunakan bantal penyangga saat duduk.",
+        },
+        {
+          tanggal: "2025-06-08",
+          keluhan: "Saya sering merasa lelah meskipun sudah cukup istirahat.",
+          rekomendasi:
+            "Pastikan asupan zat besi dan lakukan aktivitas ringan seperti jalan pagi untuk membantu sirkulasi darah.",
+        },
+      ],
+    };
+  },
+  methods: {
+    goBack() {
+      window.history.back();
+    },
+  },
+};
+</script>
+
 <template>
   <div class="max-w-3xl mx-auto p-6 bg-white rounded-xl space-y-6">
     <!-- Header -->
@@ -43,40 +77,6 @@
     </div>
   </div>
 </template>
-
-<script>
-export default {
-  data() {
-    return {
-      jurnalHarian: [
-        {
-          tanggal: "2025-06-10",
-          keluhan: "Saya merasa mual sepanjang hari dan sulit makan.",
-          rekomendasi:
-            "Cobalah makan dalam porsi kecil tetapi sering, hindari makanan berminyak, dan pastikan cukup minum air putih.",
-        },
-        {
-          tanggal: "2025-06-09",
-          keluhan: "Saya mengalami nyeri punggung ketika duduk terlalu lama.",
-          rekomendasi:
-            "Lakukan peregangan ringan secara berkala dan gunakan bantal penyangga saat duduk.",
-        },
-        {
-          tanggal: "2025-06-08",
-          keluhan: "Saya sering merasa lelah meskipun sudah cukup istirahat.",
-          rekomendasi:
-            "Pastikan asupan zat besi dan lakukan aktivitas ringan seperti jalan pagi untuk membantu sirkulasi darah.",
-        },
-      ],
-    };
-  },
-  methods: {
-    goBack() {
-      window.history.back();
-    },
-  },
-};
-</script>
 
 <style scoped>
 /* Opsional: Tambahan styling */

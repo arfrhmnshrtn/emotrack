@@ -1,65 +1,56 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onBeforeUnmount } from "vue";
 import { useRouter } from "vue-router";
 import { Icon } from "@iconify/vue";
+import { marked } from "marked";
 
+const router = useRouter();
 const message = ref("");
 const messages = ref([]);
 const loading = ref(false);
-const router = useRouter();
+const chatContainer = ref(null);
+const dropdownOpen = ref(false);
 
-// Ambil user ID dari localStorage
-const getUser = () => {
-  const user = localStorage.getItem("user");
-  if (user) {
-    try {
-      const getId = JSON.parse(user);
-      return getId.id;
-    } catch (error) {
-      console.error("Format user di localStorage tidak valid.");
-      return null;
-    }
-  }
-  return null;
+// Markdown parser
+const formatMessage = (text) => {
+  const cleaned = (text || "")
+    .replace(/^\* /gm, "") // Hilangkan bintang di awal baris list
+    .replace(/\n{2,}/g, "\n\n"); // Atur newline jadi konsisten
+  return marked.parse(cleaned);
 };
 
-// Auto scroll ke bawah setiap kali ada pesan baru
-const chatContainer = ref(null);
+const getUser = () => {
+  try {
+    const user = JSON.parse(localStorage.getItem("user"));
+    return user?.id || null;
+  } catch {
+    return null;
+  }
+};
+
 const scrollToBottom = () => {
   if (chatContainer.value) {
     chatContainer.value.scrollTop = chatContainer.value.scrollHeight;
   }
 };
 
-// Kirim pesan ke bot
 const sendMessage = async () => {
   if (!message.value.trim()) return;
-
-  // Tambahkan pesan user ke daftar
   messages.value.push({ sender: "user", text: message.value });
-
   loading.value = true;
 
   try {
-    const response = await fetch("http://localhost:3000/api/chat/generate", {
+    const res = await fetch("http://localhost:3000/api/chat/generate", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        user_id: getUser(),
-        prompt: message.value,
-      }),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ user_id: getUser(), prompt: message.value }),
     });
-
-    const data = await response.json();
-
+    const data = await res.json();
     messages.value.push({
       sender: "bot",
       text: data.response || "Tidak ada respons.",
     });
-  } catch (error) {
-    console.error("Terjadi kesalahan:", error);
+  } catch (err) {
     messages.value.push({
       sender: "bot",
       text: "Terjadi kesalahan saat mengirim pesan.",
@@ -71,118 +62,142 @@ const sendMessage = async () => {
   }
 };
 
-// Ambil history chat dari backend
 const getChat = async () => {
   try {
-    const response = await fetch(
-      `http://localhost:3000/api/chat/chats/${getUser()}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
+    const res = await fetch(
+      `http://localhost:3000/api/chat/chats/${getUser()}`
     );
-
-    const data = await response.json();
-
-    // Ubah format respons menjadi sesuai dengan format messages
-    messages.value = data.chats
-      .map((chat) => [
-        { sender: "user", text: chat.prompt },
-        { sender: "bot", text: chat.response },
-      ])
-      .flat();
-
+    const data = await res.json();
+    messages.value = data.chats.flatMap((chat) => [
+      { sender: "user", text: chat.prompt },
+      { sender: "bot", text: chat.response },
+    ]);
     scrollToBottom();
-  } catch (error) {
-    console.error("Gagal memuat chat history:", error);
+  } catch (err) {
+    console.error("Gagal memuat chat:", err);
   }
 };
 
-// Auto load chat history saat halaman dibuka
+const toggleDropdown = () => {
+  dropdownOpen.value = !dropdownOpen.value;
+};
+
+const closeDropdown = (e) => {
+  if (!e.target.closest(".dropdown-container")) {
+    dropdownOpen.value = false;
+  }
+};
+
+const hapusItem = () => {
+  messages.value = [];
+  dropdownOpen.value = false;
+};
+
 onMounted(() => {
   getChat();
+  document.addEventListener("click", closeDropdown);
+});
+onBeforeUnmount(() => {
+  document.removeEventListener("click", closeDropdown);
 });
 </script>
 
 <template>
-  <div class="flex flex-col h-screen bg-gray-100">
+  <div class="flex flex-col h-screen bg-gray-100 font-sans">
     <!-- Header -->
     <header
-      class="bg-pink-500 text-white p-4 text-xl font-semibold flex items-center gap-2 shadow"
+      class="bg-white text-gray-800 px-4 py-3 flex justify-between items-center shadow-sm"
     >
-      <Icon
-        icon="mdi:arrow-left"
-        class="w-6 h-6 cursor-pointer"
-        @click="router.back()"
-      />
-      <span>🤖 Chatbot AI</span>
+      <div class="flex items-center gap-3">
+        <Icon
+          icon="mdi:arrow-left"
+          class="w-6 h-6 cursor-pointer"
+          @click="router.back()"
+        />
+        <span class="text-lg font-semibold">🤖 Chatbot AI</span>
+      </div>
+      <div class="relative dropdown-container">
+        <button
+          @click="toggleDropdown"
+          class="p-2 rounded-full hover:bg-gray-100"
+        >
+          <Icon icon="mdi:dots-vertical" class="w-6 h-6 text-gray-700" />
+        </button>
+        <transition name="fade">
+          <div
+            v-if="dropdownOpen"
+            class="absolute right-0 mt-2 w-36 bg-white rounded-lg shadow-md z-50 ring-1"
+          >
+            <button
+              @click="hapusItem"
+              class="w-full px-4 py-2 text-sm text-left text-red-600 hover:bg-red-50"
+            >
+              🗑 Hapus
+            </button>
+          </div>
+        </transition>
+      </div>
     </header>
 
-    <!-- Chat Area -->
-    <div ref="chatContainer" class="flex-1 overflow-y-auto p-4 space-y-4">
+    <!-- Chat Content -->
+    <div
+      ref="chatContainer"
+      class="flex-1 overflow-y-auto px-4 py-4 space-y-2 bg-gray-100"
+    >
       <div
         v-for="(msg, index) in messages"
         :key="index"
-        class="flex items-end"
+        class="flex items-start mb-2 last:mb-0"
         :class="msg.sender === 'user' ? 'justify-end' : 'justify-start'"
       >
-        <!-- Avatar Bot -->
-        <div v-if="msg.sender !== 'user'" class="mr-2">
-          <Icon icon="mdi:robot" class="w-6 h-6 text-gray-600" />
+        <!-- Bot Icon -->
+        <div v-if="msg.sender !== 'user'" class="mr-2 mt-1">
+          <Icon icon="mdi:robot" class="w-6 h-6 text-gray-500" />
         </div>
 
-        <!-- Bubble Chat -->
+        <!-- Chat Bubble -->
         <div
           :class="[
-            'relative px-4 py-2 rounded-2xl max-w-xs shadow',
+            'relative px-4 py-2 max-w-xs text-sm shadow-md',
             msg.sender === 'user'
-              ? 'bg-pink-500 text-white rounded-br-none'
-              : 'bg-gray-300 text-black rounded-bl-none',
+              ? 'bg-pink-500 text-white rounded-2xl rounded-br-none'
+              : 'bg-white text-gray-800 rounded-2xl rounded-bl-none prose prose-sm prose-p:my-1 prose-strong:font-semibold prose-li:ml-4',
           ]"
-        >
-          {{ msg.text }}
-          <!-- Ekor chat -->
-          <span
-            :class="[
-              'absolute bottom-0 w-3 h-3 transform rotate-45',
-              msg.sender === 'user'
-                ? 'bg-pink-500 right-[-6px]'
-                : 'bg-gray-300 left-[-6px]',
-            ]"
-          ></span>
-        </div>
+          v-html="msg.sender === 'bot' ? formatMessage(msg.text) : msg.text"
+        ></div>
 
-        <!-- Avatar User -->
-        <div v-if="msg.sender === 'user'" class="ml-2">
+        <!-- User Icon -->
+        <div v-if="msg.sender === 'user'" class="ml-2 mt-1">
           <Icon icon="mdi:account-circle" class="w-6 h-6 text-pink-500" />
         </div>
       </div>
 
-      <!-- Loading Indicator -->
-      <div v-if="loading" class="text-gray-500 italic text-sm text-left">
-        <Icon icon="mdi:dots-horizontal" class="inline mr-1" />
-        Bot sedang mengetik...
+      <!-- Typing Indicator -->
+      <div
+        v-if="loading"
+        class="flex items-center gap-1 text-gray-500 text-sm mt-2"
+      >
+        <Icon icon="mdi:dots-horizontal" class="w-5 h-5 animate-pulse" />
+        <span>Bot sedang mengetik...</span>
       </div>
     </div>
 
-    <!-- Input Form -->
+    <!-- Input -->
     <form
       @submit.prevent="sendMessage"
-      class="p-3 bg-white flex gap-2 items-center shadow-inner"
+      class="bg-white border-t border-gray-200 px-3 py-2 flex items-center gap-2"
     >
       <input
         v-model="message"
         type="text"
         placeholder="Tulis pesan..."
-        class="flex-1 border border-gray-300 rounded-full px-4 py-2 focus:outline-none text-sm"
+        class="flex-1 bg-gray-100 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-400"
         :disabled="loading"
       />
       <button
         type="submit"
-        class="bg-pink-500 text-white p-2 rounded-full hover:bg-pink-700 disabled:opacity-50"
-        :disabled="loading"
+        class="bg-pink-500 text-white p-2 rounded-full hover:bg-pink-600 disabled:opacity-50"
+        :disabled="loading || !message.trim()"
       >
         <Icon icon="mdi:send" class="w-5 h-5" />
       </button>
@@ -191,8 +206,23 @@ onMounted(() => {
 </template>
 
 <style scoped>
-/* Tambahan: buat scroll smooth */
-[ref="chatContainer"] {
-  scroll-behavior: smooth;
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+/* Tambahan styling untuk bubble chat */
+.prose-sm :where(p):not(:where([class~="not-prose"] *)) {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.prose :where(ul):not(:where([class~="not-prose"] *)) {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
 }
 </style>
