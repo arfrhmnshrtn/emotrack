@@ -2,6 +2,7 @@
 import SplashScreen from "./SplashScreen.vue";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
+import { Icon } from "@iconify/vue";
 
 const email = ref("");
 const password = ref("");
@@ -13,17 +14,15 @@ const errors = ref({
   general: "",
 });
 
+// 🔐 Validasi form login manual
 const validateForm = () => {
   let isValid = true;
-
-  // Reset errors
   errors.value = {
     email: "",
     password: "",
     general: "",
   };
 
-  // Email validation
   if (!email.value) {
     errors.value.email = "Email harus diisi";
     isValid = false;
@@ -32,7 +31,6 @@ const validateForm = () => {
     isValid = false;
   }
 
-  // Password validation
   if (!password.value) {
     errors.value.password = "Password harus diisi";
     isValid = false;
@@ -44,6 +42,7 @@ const validateForm = () => {
   return isValid;
 };
 
+// 🧠 Login Manual
 const handleLogin = async () => {
   if (!validateForm()) return;
 
@@ -53,6 +52,7 @@ const handleLogin = async () => {
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include", // penting jika backend pakai session
       body: JSON.stringify({
         email: email.value,
         password: password.value,
@@ -74,14 +74,34 @@ const handleLogin = async () => {
   }
 };
 
+// 🌀 Splash logic
 function showSplash() {
   setTimeout(() => {
     splash.value = false;
   }, 1000);
 }
 
-onMounted(() => {
+// 🔍 Ambil user login Google saat masuk dari redirect
+onMounted(async () => {
   showSplash();
+
+  try {
+    const res = await fetch("http://localhost:3000/api/auth/profile", {
+      credentials: "include",
+    });
+
+    if (res.ok) {
+      const user = await res.json();
+      localStorage.setItem("user", JSON.stringify(user));
+      userName.value = user.name || "";
+    } else {
+      // Session tidak valid, bisa arahkan ke login
+      localStorage.removeItem("user");
+      router.push("/login");
+    }
+  } catch (error) {
+    console.error("Gagal ambil data user dari session:", error);
+  }
 });
 </script>
 
@@ -135,15 +155,24 @@ onMounted(() => {
           Masuk
         </button>
       </form>
+
       <div class="flex mt-2">
         <p>
           Belum punya akun?
-          <span>
-            <router-link to="/register" class="text-pink-500 hover:underline">
-              Daftar di sini
-            </router-link>
-          </span>
+          <router-link to="/register" class="text-pink-500 hover:underline">
+            Daftar di sini
+          </router-link>
         </p>
+      </div>
+
+      <div class="mt-10">
+        <a
+          href="http://localhost:3000/api/auth/google"
+          class="text-m bg-gray-300 hover:bg-gray-200 text-gray-800 rounded-lg py-2 flex justify-center gap-2 items-center"
+        >
+          <Icon icon="flat-color-icons:google" class="w-6 h-6" />
+          <span>Login via Google</span>
+        </a>
       </div>
     </div>
   </section>
