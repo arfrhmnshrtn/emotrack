@@ -16,6 +16,8 @@ import Settings from "../pages/Settings.vue";
 import ViewJurnal from "../pages/ViewJurnal.vue";
 import DetailArtikel from "../pages/DetailaArtikel.vue";
 import Notifikasi from "../pages/Notifikasi.vue";
+import VerifyRegister from "../pages/VerifyRegister.vue";
+import VerifyResetPassword from "../pages/VerifyResetPassword.vue";
 
 const routes = [
   { path: "/", name: "Login", component: Login, meta: { public: true } },
@@ -37,6 +39,18 @@ const routes = [
   { path: "/viewjurnal", name: "ViewJurnal", component: ViewJurnal },
   { path: "/detailartikel", name: "DetailArtikel", component: DetailArtikel },
   { path: "/notifikasi", name: "Notifikasi", component: Notifikasi },
+  {
+    path: "/verify-register",
+    name: "VerifyRegister",
+    component: VerifyRegister,
+    meta: { public: true },
+  },
+  {
+    path: "/verify-reset-password",
+    name: "VerifyResetPassword",
+    component: VerifyResetPassword,
+    meta: { public: true },
+  },
 ];
 
 const router = createRouter({

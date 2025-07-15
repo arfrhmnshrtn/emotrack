@@ -4,15 +4,15 @@ import { useRouter } from "vue-router";
 
 const router = useRouter();
 
-const username = ref("");
-const name = ref("");
-const date = ref("");
-const email = ref("");
-const password = ref("");
-const confirmPassword = ref("");
-const role = ref("");
-const hpht = ref("");
-const acceptTerms = ref(false);
+const username = ref("ariefraa");
+const name = ref("Arief Rachman Sahertian");
+const date = ref("2000-01-01"); // format: YYYY-MM-DD
+const email = ref("iw8628940@gmail.com");
+const password = ref("Password123!");
+const confirmPassword = ref("Password123!");
+const role = ref("ibu_hamil"); // atau "keluarga"
+const hpht = ref("2025-06-01"); // contoh tanggal HPHT (jika role = ibu_hamil)
+const acceptTerms = ref(true);
 
 const handleRegister = async () => {
   if (password.value !== confirmPassword.value) {
@@ -47,8 +47,9 @@ const handleRegister = async () => {
     if (!response.ok) {
       alert(result.message || "Gagal mendaftar");
     } else {
-      alert("Registrasi berhasil!");
-      router.push("/");
+      // alert("Registrasi berhasil!");
+      localStorage.setItem("pending_email", email.value);
+      router.push("/verify-register");
     }
   } catch (error) {
     console.error(error);
