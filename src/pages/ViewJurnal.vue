@@ -1,35 +1,52 @@
-<script>
-export default {
-  data() {
-    return {
-      jurnalHarian: [
-        {
-          tanggal: "2025-06-10",
-          keluhan: "Saya merasa mual sepanjang hari dan sulit makan.",
-          rekomendasi:
-            "Cobalah makan dalam porsi kecil tetapi sering, hindari makanan berminyak, dan pastikan cukup minum air putih.",
-        },
-        {
-          tanggal: "2025-06-09",
-          keluhan: "Saya mengalami nyeri punggung ketika duduk terlalu lama.",
-          rekomendasi:
-            "Lakukan peregangan ringan secara berkala dan gunakan bantal penyangga saat duduk.",
-        },
-        {
-          tanggal: "2025-06-08",
-          keluhan: "Saya sering merasa lelah meskipun sudah cukup istirahat.",
-          rekomendasi:
-            "Pastikan asupan zat besi dan lakukan aktivitas ringan seperti jalan pagi untuk membantu sirkulasi darah.",
-        },
-      ],
-    };
-  },
-  methods: {
-    goBack() {
-      window.history.back();
-    },
-  },
+<script setup>
+import { useRouter } from "vue-router";
+const viewAllJournals = ref([]);
+const loading = ref(true);
+const { router } = useRouter();
+import { onMounted, ref } from "vue";
+
+const getId = () => {
+  try {
+    const user = JSON.parse(localStorage.getItem("user"));
+    return user?.id || null;
+  } catch {
+    return null;
+  }
 };
+
+const goBack = () => {
+  router.back();
+};
+
+const fetchJournals = async () => {
+  try {
+    const response = await fetch(
+      `http://localhost:3000/api/jurnal/${getId()}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Gagal mengambil data jurnal");
+    }
+
+    const data = await response.json();
+    viewAllJournals.value = data.jurnals || [];
+  } catch (error) {
+    console.error("Error fetching journals:", error);
+    alert("Terjadi kesalahan saat mengambil data jurnal.");
+  } finally {
+    loading.value = false;
+  }
+};
+
+onMounted(() => {
+  fetchJournals();
+});
 </script>
 
 <template>
@@ -57,7 +74,7 @@ export default {
 
     <!-- Daftar Jurnal -->
     <div
-      v-for="(jurnal, index) in jurnalHarian"
+      v-for="(jurnal, index) in viewAllJournals"
       :key="index"
       class="p-4 border rounded-lg space-y-3 mb-4"
     >
@@ -71,8 +88,16 @@ export default {
       </div>
       <div class="bg-blue-50 p-3 rounded-lg">
         <p class="text-blue-700">
-          <strong>Rekomendasi AI:</strong> {{ jurnal.rekomendasi }}
+          <strong>Rekomendasi AI:</strong> {{ jurnal.response }}
         </p>
+      </div>
+      <div class="flex justify-end">
+        <router-link
+          :to="{ name: 'detailJurnal', params: { id: jurnal.id } }"
+          class="text-blue-500 hover:underline"
+        >
+          Lihat Detail
+        </router-link>
       </div>
     </div>
   </div>

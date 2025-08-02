@@ -8,9 +8,25 @@ const error = ref("");
 const success = ref("");
 const email = ref("");
 const router = useRouter();
+const countdown = ref(300);
+let timer = null;
+
+// Fungsi format detik jadi MM:SS
+const formatTime = (seconds) => {
+  const m = String(Math.floor(seconds / 60)).padStart(2, "0");
+  const s = String(seconds % 60).padStart(2, "0");
+  return `${m}:${s}`;
+};
 
 // Ambil email dari localStorage saat komponen dimuat
 onMounted(() => {
+  timer = setInterval(() => {
+    if (countdown.value > 0) {
+      countdown.value--;
+    } else {
+      clearInterval(timer);
+    }
+  }, 1000);
   const storedEmail = localStorage.getItem("pending_email");
   if (storedEmail) {
     email.value = storedEmail;
@@ -95,9 +111,9 @@ const resendOTP = async () => {
 </script>
 
 <template>
-  <div class="flex items-center justify-center min-h-screen bg-gray-100">
-    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-      <h2 class="text-2xl font-bold text-center text-green-600 mb-4">
+  <div class="flex items-center justify-center min-h-screen">
+    <div class="bg-white p-8 rounded-lg w-full max-w-md">
+      <h2 class="text-2xl font-bold text-center text-pink-600 mb-4">
         Verifikasi Email
       </h2>
 
@@ -114,20 +130,25 @@ const resendOTP = async () => {
           maxlength="6"
           inputmode="numeric"
           placeholder="Masukkan kode OTP"
-          class="w-full px-4 py-2 border border-gray-300 rounded-md mb-4 focus:outline-none focus:ring focus:ring-green-200"
+          class="w-full px-4 py-2 border border-gray-300 rounded-md mb-4 focus:outline-none focus:ring focus:ring-pink-400 text-pink-600 font-bold"
         />
 
         <button
           :disabled="loading"
           type="submit"
-          class="w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600 transition disabled:opacity-50"
+          class="w-full bg-pink-500 text-white py-2 rounded-md hover:bg-pink-600 transition disabled:opacity-50"
         >
           <span v-if="loading">Memverifikasi...</span>
           <span v-else>Verifikasi Kode</span>
         </button>
 
+        <p class="text-gray-600 text-sm mt-4 text-center">
+          {{ formatTime(countdown) }}
+        </p>
+
         <button
           type="button"
+          v-if="countdown === 0"
           @click="resendOTP"
           class="w-full mt-4 text-sm text-blue-600 hover:underline"
           :disabled="loading"
@@ -149,4 +170,3 @@ const resendOTP = async () => {
     </div>
   </div>
 </template>
-  

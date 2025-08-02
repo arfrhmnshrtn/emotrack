@@ -2,11 +2,13 @@
 import SplashScreen from "./SplashScreen.vue";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
+import Loading from "../components/Loading.vue";
 
 const email = ref("");
 const password = ref("");
 const splash = ref(true);
 const router = useRouter();
+const loading = ref(false);
 const errors = ref({
   email: "",
   password: "",
@@ -46,6 +48,7 @@ const validateForm = () => {
 
 const handleLogin = async () => {
   if (!validateForm()) return;
+  loading.value = true;
 
   try {
     const response = await fetch("http://localhost:3000/api/auth/login", {
@@ -71,6 +74,8 @@ const handleLogin = async () => {
   } catch (error) {
     console.error(error);
     errors.value.general = "Terjadi kesalahan saat menghubungi server.";
+  } finally {
+    loading.value = false;
   }
 };
 
@@ -124,6 +129,12 @@ onMounted(() => {
           </p>
         </div>
 
+        <div>
+          <router-link to="/forget-password" class="text-sm text-pink-500 ml-1"
+            >Lupa password?</router-link
+          >
+        </div>
+
         <div v-if="errors.general">
           <p class="text-sm text-red-500 italic">{{ errors.general }}</p>
         </div>
@@ -145,6 +156,7 @@ onMounted(() => {
           </span>
         </p>
       </div>
+      <Loading v-if="loading" />
     </div>
   </section>
 </template>

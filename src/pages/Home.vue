@@ -89,7 +89,7 @@ onMounted(() => {
         </div>
 
         <!-- Mood Harian -->
-        <div>
+        <!-- <div>
           <router-link to="/mood">
             <div
               class="flex items-center justify-between bg-white rounded-xl px-5 py-4 shadow-sm hover:shadow-md transition duration-200 cursor-pointer"
@@ -106,7 +106,7 @@ onMounted(() => {
               <span class="text-gray-400 text-lg">&rarr;</span>
             </div>
           </router-link>
-        </div>
+        </div> -->
       </div>
     </div>
 

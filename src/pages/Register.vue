@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import Loading from "../components/Loading.vue";
 
 const router = useRouter();
 
@@ -14,7 +15,11 @@ const role = ref("ibu_hamil"); // atau "keluarga"
 const hpht = ref("2025-06-01"); // contoh tanggal HPHT (jika role = ibu_hamil)
 const acceptTerms = ref(true);
 
+const loading = ref(false);
+
 const handleRegister = async () => {
+  loading.value = true;
+
   if (password.value !== confirmPassword.value) {
     alert("Password dan Konfirmasi Password tidak cocok!");
     return;
@@ -54,6 +59,8 @@ const handleRegister = async () => {
   } catch (error) {
     console.error(error);
     alert("Terjadi kesalahan saat registrasi");
+  } finally {
+    loading.value = false;
   }
 };
 </script>
@@ -219,6 +226,7 @@ const handleRegister = async () => {
           >
         </p>
       </form>
+      <Loading v-if="loading" />
     </div>
   </section>
 </template>

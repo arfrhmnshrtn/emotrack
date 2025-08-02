@@ -18,6 +18,8 @@ import DetailArtikel from "../pages/DetailaArtikel.vue";
 import Notifikasi from "../pages/Notifikasi.vue";
 import VerifyRegister from "../pages/VerifyRegister.vue";
 import VerifyResetPassword from "../pages/VerifyResetPassword.vue";
+import ForgetPassword from "../pages/ForgetPassword.vue";
+import detailJurnal from "../pages/detailJurnal.vue";
 
 const routes = [
   { path: "/", name: "Login", component: Login, meta: { public: true } },
@@ -39,6 +41,7 @@ const routes = [
   { path: "/viewjurnal", name: "ViewJurnal", component: ViewJurnal },
   { path: "/detailartikel", name: "DetailArtikel", component: DetailArtikel },
   { path: "/notifikasi", name: "Notifikasi", component: Notifikasi },
+  { path: "/detailjurnal/:id", name: "detailJurnal", component: detailJurnal },
   {
     path: "/verify-register",
     name: "VerifyRegister",
@@ -49,6 +52,12 @@ const routes = [
     path: "/verify-reset-password",
     name: "VerifyResetPassword",
     component: VerifyResetPassword,
+    meta: { public: true },
+  },
+  {
+    path: "/forget-password",
+    name: "ForgetPassword",
+    component: ForgetPassword,
     meta: { public: true },
   },
 ];
