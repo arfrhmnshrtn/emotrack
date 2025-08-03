@@ -158,7 +158,7 @@ const selectMood = (mood) => {
     <!-- Loading Overlay -->
     <div
       v-if="loading"
-      class="fixed inset-0 bg-transparent bg-opacity-60 flex items-center justify-center z-50"
+      class="fixed inset-0 bg-gray-50/60 flex items-center justify-center z-50"
     >
       <svg
         class="animate-spin h-10 w-10 text-pink-500"

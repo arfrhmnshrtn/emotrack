@@ -16,6 +16,25 @@ const makanan = reactive([
   { nama: "Gula", jumlah: "" },
 ]);
 
+const waktu = reactive([
+  {
+    nama: "Pagi",
+    waktu: "07:00 - 09:00",
+  },
+  {
+    nama: "Siang",
+    waktu: "12:00 - 14:00",
+  },
+  {
+    nama: "Sore",
+    waktu: "17:00 - 19:00",
+  },
+  {
+    nama: "Malam",
+    waktu: "20:00 - 22:00",
+  },
+]);
+
 const showModal = ref(false);
 
 const simpanData = () => {
@@ -43,27 +62,110 @@ const goBack = () => {
     </div>
 
     <!-- Input Form -->
-    <div v-for="(item, index) in makanan" :key="index">
-      <label class="block text-sm font-medium text-gray-700 mb-1">
-        {{ item.nama }}
-      </label>
-      <input
-        v-model.number="item.jumlah"
-        type="number"
-        min="0"
-        placeholder="Jumlah porsi"
-        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400 text-sm"
-      />
-    </div>
+    <div class="max-w-md mx-auto bg-white p-6 rounded-2xl space-y-4">
+      <form>
+        <!-- Tanggal -->
+        <div class="space-y-1">
+          <label for="tanggal" class="block text-gray-700 font-medium"
+            >Tanggal</label
+          >
+          <input
+            type="date"
+            name="tanggal"
+            id="tanggal"
+            class="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-400"
+          />
+        </div>
 
-    <!-- Tombol Simpan -->
-    <div class="text-right">
-      <button
-        @click="simpanData"
-        class="bg-pink-500 text-white px-6 py-2 rounded-lg hover:bg-pink-600 transition"
-      >
-        Simpan Data
-      </button>
+        <!-- berat badan -->
+        <div class="space-y-1 mt-5">
+          <label for="berat-badan" class="block text-gray-700 font-medium"
+            >Berat Badan (kg)</label
+          >
+          <input
+            type="number"
+            name="berat-badan"
+            id="berat-badan"
+            placeholder="Masukkan berat badan"
+            class="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-400"
+          />
+        </div>
+
+        <!-- Waktu -->
+        <div class="space-y-1 mt-5">
+          <label for="jenis-makanan" class="block text-gray-700 font-medium"
+            >Waktu</label
+          >
+          <select
+            name="jenis-makanan"
+            id="jenis-makanan"
+            class="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-pink-400"
+          >
+            <option value="" disabled selected>-- Pilih Waktu --</option>
+            <option v-for="item in waktu" :key="item.nama" :value="item.nama">
+              {{ item.nama }}
+            </option>
+          </select>
+        </div>
+
+        <!-- jumlah -->
+        <div class="space-y-1 mt-5">
+          <label for="jumlah" class="block text-gray-700 font-medium"
+            >Jumlah</label
+          >
+          <input
+            type="number"
+            name="jumlah"
+            id="jumlah"
+            placeholder="Masukkan jumlah (dalam gram)"
+            class="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-400"
+          />
+        </div>
+
+        <!-- satuan -->
+        <div class="space-y-1 mt-5">
+          <label for="satuan" class="block text-gray-700 font-medium"
+            >Satuan</label
+          >
+          <select
+            name="satuan"
+            id="satuan"
+            class="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-pink-400"
+          >
+            <option value="" disabled selected>-- Pilih Satuan --</option>
+            <option value="gram">Gram</option>
+            <option value="piring">Piring</option>
+            <option value="sendok">Sendok</option>
+            <option value="gelas">Gelas</option>
+            <option value="buah">Buah</option>
+            <option value="porsi">Porsi</option>
+          </select>
+        </div>
+
+        <!-- Makanan -->
+        <div class="space-y-1 mt-5">
+          <label for="makanan" class="block text-gray-700 font-medium"
+            >Makanan/Minuman</label
+          >
+          <textarea
+            type="text"
+            name="makanan"
+            id="makanan"
+            placeholder="Masukkan makanan"
+            class="w-full h-32 border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-400"
+          />
+        </div>
+
+        <!-- Tombol Simpan -->
+        <div class="text-right pt-2">
+          <button
+            type="submit"
+            class="bg-pink-500 text-white px-6 py-2 rounded-xl hover:bg-pink-600 transition duration-200"
+          >
+            Simpan
+          </button>
+        </div>
+      </form>
     </div>
 
     <!-- Modal Pop Up -->
