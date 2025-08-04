@@ -19,7 +19,9 @@ import Notifikasi from "../pages/Notifikasi.vue";
 import VerifyRegister from "../pages/VerifyRegister.vue";
 import VerifyResetPassword from "../pages/VerifyResetPassword.vue";
 import ForgetPassword from "../pages/ForgetPassword.vue";
-import detailJurnal from "../pages/detailJurnal.vue";
+import detailJurnal from "../pages/DetailJurnal.vue";
+import viewGizi from "../pages/viewGizi.vue";
+import DetailGizi from "../pages/DetailGizi.vue";
 
 const routes = [
   { path: "/", name: "Login", component: Login, meta: { public: true } },
@@ -42,6 +44,8 @@ const routes = [
   { path: "/detailartikel", name: "DetailArtikel", component: DetailArtikel },
   { path: "/notifikasi", name: "Notifikasi", component: Notifikasi },
   { path: "/detailjurnal/:id", name: "detailJurnal", component: detailJurnal },
+  { path: "/viewgizi", name: "viewGizi", component: viewGizi },
+  { path: "/detailgizi/:id", name: "DetailGizi", component: DetailGizi },
   {
     path: "/verify-register",
     name: "VerifyRegister",

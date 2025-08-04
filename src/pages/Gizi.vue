@@ -49,7 +49,7 @@ const goBack = () => {
 
 <template>
   <div
-    class="max-w-xl mx-auto p-6 bg-white rounded-xl space-y-6 shadow-sm min-h-screen"
+    class="max-w-xl mx-auto p-4 bg-white rounded-xl space-y-6 shadow-sm min-h-screen"
   >
     <!-- Header -->
     <div class="flex items-center gap-3">
@@ -166,6 +166,12 @@ const goBack = () => {
           </button>
         </div>
       </form>
+
+      <button>
+        <router-link to="/viewgizi" class="text-blue-600 hover:underline">
+          Lihat Gizi
+        </router-link>
+      </button>
     </div>
 
     <!-- Modal Pop Up -->

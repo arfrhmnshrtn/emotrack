@@ -87,26 +87,44 @@ onMounted(() => {
             </div>
           </router-link>
         </div>
+      </div>
+    </div>
 
-        <!-- Mood Harian -->
-        <!-- <div>
-          <router-link to="/mood">
-            <div
-              class="flex items-center justify-between bg-white rounded-xl px-5 py-4 shadow-sm hover:shadow-md transition duration-200 cursor-pointer"
-            >
-              <div class="flex items-center space-x-3">
-                <Icon
-                  icon="mdi:emoticon-happy-outline"
-                  class="text-yellow-500"
-                  width="22"
-                  height="22"
-                />
-                <span class="text-gray-800 font-medium">Mood Harian</span>
-              </div>
-              <span class="text-gray-400 text-lg">&rarr;</span>
-            </div>
-          </router-link>
-        </div> -->
+    <div class="mt-6">
+      <h2 class="text-lg font-semibold text-gray-700 mb-3">Hasil</h2>
+      <div class="bg-white rounded-xl p-5 shadow-sm space-y-4">
+        <!-- Link Data Gizi -->
+        <router-link to="/viewGizi" class="block bg-green-300 rounded-2xl hover:bg-green-400">
+          <div
+            class="flex items-center justify-between px-3 py-2 rounded-md transition"
+          >
+            <span class="text-gray-800 font-medium">Lihat Data Gizi</span>
+            <Icon
+              icon="mdi:arrow-right"
+              class="text-gray-400"
+              width="20"
+              height="20"
+            />
+          </div>
+        </router-link>
+
+        <!-- Link Data Jurnal -->
+        <router-link
+          to="/viewJurnal"
+          class="block bg-blue-300 rounded-2xl hover:bg-blue-400"
+        >
+          <div
+            class="flex items-center justify-between px-3 py-2 rounded-md transition"
+          >
+            <span class="text-gray-800 font-medium">Lihat Data Jurnal</span>
+            <Icon
+              icon="mdi:arrow-right"
+              class="text-gray-400"
+              width="20"
+              height="20"
+            />
+          </div>
+        </router-link>
       </div>
     </div>
 

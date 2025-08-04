@@ -1,16 +1,14 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { onMounted, ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { marked } from "marked";
 import Loading from "../components/Loading.vue";
-
+import { marked } from "marked";
 const router = useRouter();
 const route = useRoute();
 const loading = ref(false);
+const gizi = ref({});
 
-const viewJurnal = ref({});
-
-const getJurnalId = route.params.id;
+const id = route.params.id;
 
 const formatMessage = (text) => {
   const cleaned = (text || "")
@@ -21,11 +19,11 @@ const formatMessage = (text) => {
   return html;
 };
 
-const fetchJournals = async () => {
+const fetchGiziDetail = async () => {
   loading.value = true;
   try {
     const response = await fetch(
-      `http://localhost:3000/api/jurnal/detail/${getJurnalId}`,
+      `http://localhost:3000/api/gizi/detail/${id}`,
       {
         method: "GET",
         headers: {
@@ -33,18 +31,24 @@ const fetchJournals = async () => {
         },
       }
     );
+
+    if (!response.ok) {
+      throw new Error("Gagal mengambil detail gizi");
+    }
+
     const data = await response.json();
-    viewJurnal.value = data.jurnal;
-    // console.log(viewJurnal.value);
+    gizi.value = data.gizi;
+    console.log("Fetched Gizi Detail:", gizi.value);
   } catch (error) {
-    console.error(error);
+    console.error("Error fetching gizi detail:", error);
+    alert("Terjadi kesalahan saat mengambil detail gizi.");
   } finally {
     loading.value = false;
   }
 };
 
 onMounted(() => {
-  fetchJournals();
+  fetchGiziDetail();
 });
 </script>
 
@@ -68,7 +72,7 @@ onMounted(() => {
           />
         </svg>
       </button>
-      <h1 class="text-lg font-medium text-gray-900">Detail Jurnal</h1>
+      <h1 class="text-lg font-medium text-gray-900">Detail Gizi</h1>
     </div>
 
     <!-- Content -->
@@ -77,20 +81,28 @@ onMounted(() => {
         <div>
           <h2 class="text-sm text-gray-500 mb-1">Tanggal</h2>
           <p class="text-base text-gray-800 font-medium">
-            {{ viewJurnal.tanggal }}
+            {{ gizi.tanggal }}
           </p>
         </div>
         <div>
-          <h2 class="text-sm text-gray-500 mb-1">Keluhan</h2>
+          <h2 class="text-sm text-gray-500 mb-1">Waktu</h2>
+          <p class="text-base text-gray-800 font-medium">
+            {{ gizi.waktu }}
+          </p>
+        </div>
+        <div>
+          <h2 class="text-sm text-gray-500 mb-1">Makanan</h2>
           <p class="text-base text-gray-700">
-            {{ viewJurnal.keluhan }}
+            {{ gizi.makanan }}
           </p>
         </div>
         <div>
-          <h2 class="text-sm text-gray-500 mb-1">Deskripsi</h2>
-          <p class="text-base text-gray-700 whitespace-pre-line">
-            {{ viewJurnal.response }}
-          </p>
+          <h2 class="text-sm text-gray-500 mb-1">Hasil</h2>
+          <div class="bg-gray-50 border border-gray-200 p-4 rounded-xl shadow">
+            <div class="prose prose-sm max-w-none text-gray-800">
+              <div v-html="formatMessage(gizi.response)"></div>
+            </div>
+          </div>
         </div>
       </div>
       <Loading v-if="loading" />
