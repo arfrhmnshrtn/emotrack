@@ -38,7 +38,6 @@ const fetchGiziDetail = async () => {
 
     const data = await response.json();
     gizi.value = data.gizi;
-    console.log("Fetched Gizi Detail:", gizi.value);
   } catch (error) {
     console.error("Error fetching gizi detail:", error);
     alert("Terjadi kesalahan saat mengambil detail gizi.");

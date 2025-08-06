@@ -28,12 +28,12 @@ const moodData = {
     {
       label: "Senang",
       backgroundColor: "#34d399",
-      data: [15, 18, 12, 20],
+      data: [100, 100, 100, 200],
     },
     {
       label: "Baik",
       backgroundColor: "#60a5fa",
-      data: [20, 22, 19, 25],
+      data: [200, 22, 19, 25],
     },
     {
       label: "Biasa",

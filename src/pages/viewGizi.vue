@@ -67,7 +67,6 @@ const fetchGiziData = async () => {
     allGizi.value = data.gizis || [];
   } catch (error) {
     console.error("Error fetching gizi data:", error);
-    alert("Terjadi kesalahan saat mengambil data gizi.");
   } finally {
     loading.value = false;
   }

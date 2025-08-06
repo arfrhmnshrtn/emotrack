@@ -14,14 +14,15 @@ import Grafik from "../pages/Grafik.vue";
 import ChatBot from "../pages/ChatBot.vue";
 import Settings from "../pages/Settings.vue";
 import ViewJurnal from "../pages/ViewJurnal.vue";
-import DetailArtikel from "../pages/DetailaArtikel.vue";
+import DetailArtikel from "../pages/DetailArtikel.vue";
 import Notifikasi from "../pages/Notifikasi.vue";
 import VerifyRegister from "../pages/VerifyRegister.vue";
 import VerifyResetPassword from "../pages/VerifyResetPassword.vue";
 import ForgetPassword from "../pages/ForgetPassword.vue";
-import detailJurnal from "../pages/DetailJurnal.vue";
+import DetailJurnal from "../pages/DetailJurnal.vue";
 import viewGizi from "../pages/viewGizi.vue";
 import DetailGizi from "../pages/DetailGizi.vue";
+import InputNewPassword from "../pages/InputNewPassword.vue";
 
 const routes = [
   { path: "/", name: "Login", component: Login, meta: { public: true } },
@@ -29,6 +30,12 @@ const routes = [
     path: "/register",
     name: "Register",
     component: Register,
+    meta: { public: true },
+  },
+  {
+    path: "/input-new-password",
+    name: "InputNewPassword",
+    component: InputNewPassword,
     meta: { public: true },
   },
   { path: "/dashboard", name: "Home", component: Home },
@@ -43,7 +50,7 @@ const routes = [
   { path: "/viewjurnal", name: "ViewJurnal", component: ViewJurnal },
   { path: "/detailartikel", name: "DetailArtikel", component: DetailArtikel },
   { path: "/notifikasi", name: "Notifikasi", component: Notifikasi },
-  { path: "/detailjurnal/:id", name: "detailJurnal", component: detailJurnal },
+  { path: "/detailjurnal/:id", name: "detailJurnal", component: DetailJurnal },
   { path: "/viewgizi", name: "viewGizi", component: viewGizi },
   { path: "/detailgizi/:id", name: "DetailGizi", component: DetailGizi },
   {

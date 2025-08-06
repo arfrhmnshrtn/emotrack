@@ -88,9 +88,12 @@ onMounted(() => {
         </div>
         <div>
           <h2 class="text-sm text-gray-500 mb-1">Deskripsi</h2>
-          <p class="text-base text-gray-700 whitespace-pre-line">
+          <!-- <p class="text-base text-gray-700 whitespace-pre-line">
             {{ viewJurnal.response }}
-          </p>
+          </p> -->
+          <div class="prose prose-sm max-w-none text-gray-800">
+            <div v-html="formatMessage(viewJurnal.response)"></div>
+          </div>
         </div>
       </div>
       <Loading v-if="loading" />

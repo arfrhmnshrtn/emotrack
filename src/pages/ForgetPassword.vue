@@ -1,6 +1,9 @@
 <script setup>
 import { ref } from "vue";
+import { useRouter } from "vue-router";
+import Loading from "../components/Loading.vue";
 
+const router = useRouter();
 const email = ref("");
 const loading = ref(false);
 const error = ref("");
@@ -26,6 +29,8 @@ const submit = async () => {
     if (!response.ok) throw new Error(result.message || "Gagal mengirim kode");
 
     success.value = "Kode OTP telah dikirim ke email Anda.";
+    localStorage.setItem("pending_email", email.value);
+    router.push("/verify-reset-password");
   } catch (err) {
     error.value = err.message || "Terjadi kesalahan";
   } finally {
@@ -76,6 +81,8 @@ const submit = async () => {
         >
       </div>
     </div>
+
+    <Loading v-if="loading" />
   </div>
 </template>
 

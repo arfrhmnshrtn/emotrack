@@ -12,11 +12,20 @@ const chatContainer = ref(null);
 const dropdownOpen = ref(false);
 
 // Markdown parser
+// const formatMessage = (text) => {
+//   const cleaned = (text || "")
+//     .replace(/^\* /gm, "") // Hilangkan bintang di awal baris list
+//     .replace(/\n{2,}/g, "\n\n"); // Atur newline jadi konsisten
+//   return marked.parse(cleaned);
+// };
+
 const formatMessage = (text) => {
   const cleaned = (text || "")
-    .replace(/^\* /gm, "") // Hilangkan bintang di awal baris list
-    .replace(/\n{2,}/g, "\n\n"); // Atur newline jadi konsisten
-  return marked.parse(cleaned);
+    .replace(/^\*\s+/gm, "- ") // bintang jadi dash list
+    .replace(/\n{2,}/g, "\n\n"); // konsisten newline
+
+  const html = marked.parse(cleaned);
+  return html;
 };
 
 const getUser = () => {
