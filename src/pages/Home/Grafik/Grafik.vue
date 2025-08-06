@@ -1,6 +1,6 @@
 <script setup>
-import ChartBar from "../components/ChartBar.vue";
-import NavbarBottom from "../components/NavbarBottom.vue";
+import ChartBar from "../../../components/ChartBar.vue";
+import NavbarBottom from "../../../components/NavbarBottom.vue";
 </script>
 
 <template>

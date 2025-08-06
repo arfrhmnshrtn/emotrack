@@ -1,6 +1,6 @@
 <script setup>
 import { Icon } from "@iconify/vue";
-import NavbarBottom from "../components/NavbarBottom.vue";
+import NavbarBottom from "../../../components/NavbarBottom.vue";
 
 import { useRouter } from "vue-router";
 import { ref, onMounted } from "vue";

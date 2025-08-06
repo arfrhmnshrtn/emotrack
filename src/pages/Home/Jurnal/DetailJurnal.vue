@@ -2,7 +2,7 @@
 import { ref, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { marked } from "marked";
-import Loading from "../components/Loading.vue";
+import Loading from "../../../components/Loading.vue";
 
 const router = useRouter();
 const route = useRoute();

@@ -2,7 +2,7 @@
 import { ref, reactive } from "vue";
 import { Icon } from "@iconify/vue";
 import { useRouter } from "vue-router";
-import Loading from "../components/Loading.vue";
+import Loading from "../../../components/Loading.vue";
 
 const router = useRouter();
 const loading = ref(false);

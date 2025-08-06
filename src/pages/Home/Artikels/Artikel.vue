@@ -1,5 +1,5 @@
 <script setup>
-import NavbarBottom from "../components/NavbarBottom.vue";
+import NavbarBottom from "../../../components/NavbarBottom.vue";
 
 const articles = [
   {

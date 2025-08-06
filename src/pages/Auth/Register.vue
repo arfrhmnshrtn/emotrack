@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import Loading from "../components/Loading.vue";
+import Loading from "../../components/Loading.vue";
 
 const router = useRouter();
 
@@ -14,16 +14,12 @@ const confirmPassword = ref("Password123!");
 const role = ref("ibu_hamil"); // atau "keluarga"
 const hpht = ref("2025-06-01"); // contoh tanggal HPHT (jika role = ibu_hamil)
 const acceptTerms = ref(true);
+const errorText = ref("");
 
 const loading = ref(false);
 
 const handleRegister = async () => {
   loading.value = true;
-
-  if (password.value !== confirmPassword.value) {
-    alert("Password dan Konfirmasi Password tidak cocok!");
-    return;
-  }
 
   if (!acceptTerms.value) {
     alert("Anda harus menyetujui Syarat dan Ketentuan.");
@@ -50,7 +46,9 @@ const handleRegister = async () => {
     const result = await response.json();
 
     if (!response.ok) {
-      alert(result.message || "Gagal mendaftar");
+      // alert(result.message || "Gagal mendaftar");
+      errorText.value = result.message || "Gagal mendaftar";
+      console.error(result.message || "Gagal mendaftar");
     } else {
       // alert("Registrasi berhasil!");
       localStorage.setItem("pending_email", email.value);
@@ -58,7 +56,7 @@ const handleRegister = async () => {
     }
   } catch (error) {
     console.error(error);
-    alert("Terjadi kesalahan saat registrasi");
+    // alert("Terjadi kesalahan saat registrasi");
   } finally {
     loading.value = false;
   }
@@ -211,6 +209,13 @@ const handleRegister = async () => {
             >
           </label>
         </div>
+
+        <p
+          v-if="errorText"
+          class="text-red-500 text-sm mt-2 text-center animate-bounce"
+        >
+          {{ errorText }}
+        </p>
 
         <button
           type="submit"

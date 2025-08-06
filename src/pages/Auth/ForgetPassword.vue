@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import Loading from "../components/Loading.vue";
+import Loading from "../../components/Loading.vue";
 
 const router = useRouter();
 const email = ref("");

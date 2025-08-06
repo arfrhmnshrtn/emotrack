@@ -1,19 +1,11 @@
 <script setup>
-import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import Loading from "../components/Loading.vue";
-
+import Loading from "../../../components/Loading.vue";
+const viewAllJournals = ref([]);
 const loading = ref(false);
+const { router } = useRouter();
+import { onMounted, ref } from "vue";
 
-const router = useRouter();
-const allGizi = ref([]);
-
-// Fungsi kembali
-const goBack = () => {
-  router.back();
-};
-
-// Ambil ID user dari localStorage
 const getId = () => {
   try {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -23,12 +15,11 @@ const getId = () => {
   }
 };
 
-const upperCaseFirst = (str) => {
-  return str.charAt(0).toUpperCase() + str.slice(1);
+const goBack = () => {
+  router.back();
 };
 
-// Potong teks AI
-const cutText = (text, maxWords = 10) => {
+const cutText = (text, maxWords = 20) => {
   if (!text) return "";
   const words = text.split(/\s+/);
   return words.length > maxWords
@@ -36,23 +27,11 @@ const cutText = (text, maxWords = 10) => {
     : text;
 };
 
-// Format tanggal (YYYY-MM-DD ke DD MMM YYYY)
-const formatDate = (dateStr) => {
-  const options = {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-    weekday: "long",
-  };
-  return new Date(dateStr).toLocaleDateString("id-ID", options);
-};
-
-// Ambil data gizi
-const fetchGiziData = async () => {
+const fetchJournals = async () => {
   loading.value = true;
   try {
     const response = await fetch(
-      `http://localhost:3000/api/gizi/user/${getId()}`,
+      `http://localhost:3000/api/jurnal/${getId()}`,
       {
         method: "GET",
         headers: {
@@ -61,20 +40,34 @@ const fetchGiziData = async () => {
       }
     );
 
-    if (!response.ok) throw new Error("Gagal mengambil data gizi");
+    if (!response.ok) {
+      throw new Error("Gagal mengambil data jurnal");
+    }
 
     const data = await response.json();
-    allGizi.value = data.gizis || [];
+    console.log("Fetched Journals:", data);
+    viewAllJournals.value = (data.jurnals || []).sort((a, b) => {
+      return new Date(b.tanggal) - new Date(a.tanggal);
+    });
   } catch (error) {
-    console.error("Error fetching gizi data:", error);
+    console.error("Error fetching journals:", error);
+    alert("Terjadi kesalahan saat mengambil data jurnal.");
   } finally {
     loading.value = false;
   }
 };
 
-// Panggil saat komponen dimount
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("id-ID", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
+
 onMounted(() => {
-  fetchGiziData();
+  fetchJournals();
 });
 </script>
 
@@ -101,48 +94,41 @@ onMounted(() => {
           />
         </svg>
       </button>
-      <h1 class="text-2xl font-bold text-gray-800">Data Gizi Harian</h1>
+      <h1 class="text-2xl font-bold text-gray-800">Jurnal Harian</h1>
     </div>
 
-    <div class="mb-4 text-gray-600">
-      <p>
-        Hari ini,
-        {{ new Date().toLocaleDateString("id-ID", { weekday: "long" }) }}:
-        <span class="font-semibold">{{
-          new Date().toLocaleDateString("id-ID")
-        }}</span>
-      </p>
+    <!-- buat di tengah halaman -->
+    <div
+      class="fixed inset-0 flex items-center justify-center z-50"
+      v-if="viewAllJournals.length === 0 && !loading"
+    >
+      <p class="text-xl text-gray-600">Belum ada Jurnal</p>
     </div>
 
-    <!-- Daftar Gizi -->
+    <!-- Daftar Jurnal -->
     <router-link
-      v-for="(gizi, index) in allGizi"
+      v-for="(jurnal, index) in viewAllJournals"
       :key="index"
-      :to="{ name: 'DetailGizi', params: { id: gizi.id } }"
+      :to="{ name: 'detailJurnal', params: { id: jurnal.id } }"
       class="bg-white shadow-md rounded-2xl p-5 mb-6 hover:shadow-lg transition duration-300 cursor-pointer block"
     >
       <div class="space-y-2">
         <div class="flex items-center justify-between">
           <h3 class="text-base font-semibold text-gray-700">
-            {{ formatDate(gizi.tanggal) }}
+            {{ formatDate(jurnal.tanggal) }}
           </h3>
-          <span class="text-sm text-gray-500">#{{ gizi.id }}</span>
+          <span class="text-sm text-gray-500">#{{ jurnal.id }}</span>
         </div>
 
         <p class="text-sm text-gray-600 leading-relaxed">
-          <strong class="font-medium text-gray-700">Waktu Makan:</strong>
-          {{ upperCaseFirst(gizi.waktu) }}
-        </p>
-
-        <p class="text-sm text-gray-600 leading-relaxed">
-          <strong class="font-medium text-gray-700">Makanan/Minuman:</strong>
-          {{ upperCaseFirst(gizi.makanan) }}
+          <strong class="font-medium text-gray-700">Keluhan:</strong>
+          {{ jurnal.keluhan }}
         </p>
 
         <div class="bg-blue-100 rounded-lg p-4">
           <p class="text-sm text-blue-800">
             <strong class="font-semibold">Rekomendasi AI:</strong>
-            {{ cutText(gizi.response) }}
+            {{ cutText(jurnal.response) }}
           </p>
         </div>
       </div>
@@ -153,6 +139,7 @@ onMounted(() => {
 </template>
 
 <style scoped>
+/* Tambahan opsional untuk efek transisi Android feel */
 @media (hover: hover) {
   .hover\:shadow-lg:hover {
     transform: translateY(-2px);

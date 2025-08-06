@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import Loading from "../components/Loading.vue";
+import Loading from "../../../components/Loading.vue";
 import { marked } from "marked";
 const router = useRouter();
 const route = useRoute();

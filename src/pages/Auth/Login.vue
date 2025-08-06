@@ -2,7 +2,7 @@
 import SplashScreen from "./SplashScreen.vue";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
-import Loading from "../components/Loading.vue";
+import Loading from "../../components/Loading.vue";
 // import { Icon } from "@iconify/vue";
 
 const showPassword = ref(false);

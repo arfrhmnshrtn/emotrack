@@ -2,27 +2,27 @@
 import { createRouter, createWebHistory } from "vue-router";
 
 // Pages
-import Home from "../pages/Home.vue";
-import Login from "../pages/Login.vue";
-import Register from "../pages/Register.vue";
-import Gizi from "../pages/Gizi.vue";
-import Jurnal from "../pages/Jurnal.vue";
-import Mood from "../pages/Mood.vue";
-import Profile from "../pages/Profile.vue";
-import Artikel from "../pages/Artikel.vue";
-import Grafik from "../pages/Grafik.vue";
-import ChatBot from "../pages/ChatBot.vue";
-import Settings from "../pages/Settings.vue";
-import ViewJurnal from "../pages/ViewJurnal.vue";
-import DetailArtikel from "../pages/DetailArtikel.vue";
-import Notifikasi from "../pages/Notifikasi.vue";
-import VerifyRegister from "../pages/VerifyRegister.vue";
-import VerifyResetPassword from "../pages/VerifyResetPassword.vue";
-import ForgetPassword from "../pages/ForgetPassword.vue";
-import DetailJurnal from "../pages/DetailJurnal.vue";
-import viewGizi from "../pages/viewGizi.vue";
-import DetailGizi from "../pages/DetailGizi.vue";
-import InputNewPassword from "../pages/InputNewPassword.vue";
+import Home from "../pages/Home/Home.vue";
+import Login from "../pages/Auth/Login.vue";
+import Register from "../pages/Auth/Register.vue";
+import Gizi from "../pages/Home/Gizi/Gizi.vue";
+import Jurnal from "../pages/Home/Jurnal/Jurnal.vue";
+import Profile from "../pages/Home/Profile/Profile.vue";
+import Artikel from "../pages/Home/Artikels/Artikel.vue";
+import Grafik from "../pages/Home/Grafik/Grafik.vue";
+import ChatBot from "../pages/Home/ChatBot/ChatBot.vue";
+import Settings from "../pages/Home/Profile/Settings.vue";
+import ViewJurnal from "../pages/Home/Jurnal/ViewJurnal.vue";
+import DetailArtikel from "../pages/Home/Artikels/DetailArtikel.vue";
+import Notifikasi from "../pages/Home/Notifikasi.vue";
+import VerifyRegister from "../pages/Auth/VerifyRegister.vue";
+import VerifyResetPassword from "../pages/Auth/VerifyResetPassword.vue";
+import ForgetPassword from "../pages/Auth/ForgetPassword.vue";
+import DetailJurnal from "../pages/Home/Jurnal/DetailJurnal.vue";
+// import viewGizi from "../pages/ViewGizi.vue";
+import DetailGizi from "../pages/Home/Gizi/DetailGizi.vue";
+import InputNewPassword from "../pages/Auth/InputNewPassword.vue";
+import viewGizi from "../pages/Home/Gizi/viewGizi.vue";
 
 const routes = [
   { path: "/", name: "Login", component: Login, meta: { public: true } },
@@ -41,7 +41,6 @@ const routes = [
   { path: "/dashboard", name: "Home", component: Home },
   { path: "/gizi", name: "Gizi", component: Gizi },
   { path: "/jurnal", name: "Jurnal", component: Jurnal },
-  { path: "/mood", name: "Mood", component: Mood },
   { path: "/profile", name: "Profile", component: Profile },
   { path: "/artikel", name: "Artikel", component: Artikel },
   { path: "/grafik", name: "Grafik", component: Grafik },

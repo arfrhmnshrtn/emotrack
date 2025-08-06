@@ -1,7 +1,7 @@
 <script setup>
 import { Icon } from "@iconify/vue";
-import Artikel from "../components/Artikel.vue";
-import NavbarBottom from "../components/NavbarBottom.vue";
+import Artikel from "../../components/Artikel.vue";
+import NavbarBottom from "../../components/NavbarBottom.vue";
 import { onMounted, ref } from "vue";
 
 const userName = ref("");
