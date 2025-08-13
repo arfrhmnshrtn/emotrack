@@ -3,7 +3,7 @@ import SplashScreen from "./SplashScreen.vue";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import Loading from "../../components/Loading.vue";
-import { Http } from "@capacitor/http";
+// import { Http } from "@capacitor/http";
 // import { Icon } from "@iconify/vue";
 
 const showPassword = ref(false);
@@ -77,14 +77,14 @@ const handleLogin = async () => {
     //   },
     // });
 
-    // const result = await response.json();
+    const result = await response.json();
 
     if (!response.ok) {
       errors.value.general = data.message || "Login gagal";
       return;
     }
 
-    localStorage.setItem("user", JSON.stringify(data.user));
+    localStorage.setItem("user", JSON.stringify(result.user));
     router.push("/dashboard");
   } catch (error) {
     console.error(error);

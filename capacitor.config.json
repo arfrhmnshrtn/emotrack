@@ -1,5 +1,9 @@
 {
   "appId": "com.emotrack.app",
   "appName": "EmoTrack",
-  "webDir": "dist"
+  "webDir": "dist",
+  "server": {
+    "cleartext": true,
+    "androidScheme": "http"
+  }
 }

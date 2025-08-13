@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<network-security-config>
-    <domain-config cleartextTrafficPermitted="true">
-        <!-- Ganti IP berikut dengan IP VPS kamu -->
-        <domain includeSubdomains="true">202.10.35.143</domain>
-    </domain-config>
-</network-security-config>
