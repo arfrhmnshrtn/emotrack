@@ -5,14 +5,14 @@ import Loading from "../../components/Loading.vue";
 
 const router = useRouter();
 
-const username = ref("ariefraa");
-const name = ref("Arief Rachman Sahertian");
-const date = ref("2000-01-01"); // format: YYYY-MM-DD
-const email = ref("iw8628940@gmail.com");
-const password = ref("Password123!");
-const confirmPassword = ref("Password123!");
-const role = ref("ibu_hamil"); // atau "keluarga"
-const hpht = ref("2025-06-01"); // contoh tanggal HPHT (jika role = ibu_hamil)
+const username = ref("");
+const name = ref("");
+const date = ref(""); // format: YYYY-MM-DD
+const email = ref("");
+const password = ref("");
+const confirmPassword = ref("");
+const role = ref(""); // atau "keluarga"
+const hpht = ref(""); // contoh tanggal HPHT (jika role = ibu_hamil)
 const acceptTerms = ref(true);
 const errorText = ref("");
 
@@ -37,11 +37,14 @@ const handleRegister = async () => {
   };
 
   try {
-    const response = await fetch("http://localhost:3000/api/auth/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
+    const response = await fetch(
+      "http://202.10.35.143:3000/api/auth/register",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      }
+    );
 
     const result = await response.json();
 

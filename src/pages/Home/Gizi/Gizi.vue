@@ -44,7 +44,7 @@ const getId = () => {
 const saveGizi = async () => {
   loading.value = true;
   try {
-    const request = await fetch("http://localhost:3000/api/gizi/save", {
+    const request = await fetch("http://202.10.35.143:3000/api/gizi/save", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

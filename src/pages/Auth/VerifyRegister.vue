@@ -56,7 +56,7 @@ const submitCode = async () => {
 
   try {
     const response = await fetch(
-      "http://localhost:3000/api/auth/verify-register-otp",
+      "http://202.10.35.143:3000/api/auth/verify-register-otp",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -90,11 +90,14 @@ const resendOTP = async () => {
   success.value = "";
 
   try {
-    const response = await fetch("http://localhost:3000/api/auth/resend-otp", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: email.value }),
-    });
+    const response = await fetch(
+      "http://202.10.35.143:3000/api/auth/resend-otp",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.value }),
+      }
+    );
 
     const data = await response.json();
 

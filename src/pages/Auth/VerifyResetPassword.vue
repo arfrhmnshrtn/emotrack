@@ -35,7 +35,7 @@ const submitOtp = async () => {
   const code = otp.value.join("");
   try {
     const response = await fetch(
-      "http://localhost:3000/api/auth/verify-reset-code",
+      "http://202.10.35.143:3000/api/auth/verify-reset-code",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

@@ -34,7 +34,7 @@ const submitJurnal = async () => {
   loading.value = true;
   submitted.value = false;
   try {
-    const response = await fetch("http://localhost:3000/api/jurnal/generate", {
+    const response = await fetch("http://202.10.35.143:3000/api/jurnal/generate", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

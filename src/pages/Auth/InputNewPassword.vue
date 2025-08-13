@@ -22,7 +22,7 @@ const submitNewPassword = async () => {
 
   try {
     const response = await fetch(
-      "http://localhost:3000/api/auth/reset-password",
+      "http://202.10.35.143:3000/api/auth/reset-password",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -130,7 +130,7 @@ onMounted(() => {
 
     <!-- modal -->
     <div
-      class="fixed inset-0 flex  bg-opacity-50 items-center justify-center z-50"
+      class="fixed inset-0 flex bg-opacity-50 items-center justify-center z-50"
       v-if="showModal"
     >
       <div

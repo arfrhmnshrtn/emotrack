@@ -31,7 +31,7 @@ const fetchJournals = async () => {
   loading.value = true;
   try {
     const response = await fetch(
-      `http://localhost:3000/api/jurnal/${getId()}`,
+      `http://202.10.35.143:3000/api/jurnal/${getId()}`,
       {
         method: "GET",
         headers: {

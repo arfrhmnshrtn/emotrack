@@ -16,7 +16,7 @@ const submit = async () => {
 
   try {
     const response = await fetch(
-      "http://localhost:3000/api/auth/forgot-password",
+      "http://202.10.35.143:3000/api/auth/forgot-password",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

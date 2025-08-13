@@ -52,7 +52,7 @@ const fetchGiziData = async () => {
   loading.value = true;
   try {
     const response = await fetch(
-      `http://localhost:3000/api/gizi/user/${getId()}`,
+      `http://202.10.35.143:3000/api/gizi/user/${getId()}`,
       {
         method: "GET",
         headers: {

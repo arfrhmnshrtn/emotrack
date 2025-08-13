@@ -49,7 +49,7 @@ const sendMessage = async () => {
   loading.value = true;
 
   try {
-    const res = await fetch("http://localhost:3000/api/chat/generate", {
+    const res = await fetch("http://202.10.35.143:3000/api/chat/generate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ user_id: getUser(), prompt: message.value }),
@@ -74,7 +74,7 @@ const sendMessage = async () => {
 const getChat = async () => {
   try {
     const res = await fetch(
-      `http://localhost:3000/api/chat/chats/${getUser()}`
+      `http://202.10.35.143:3000/api/chat/chats/${getUser()}`
     );
     const data = await res.json();
     messages.value = data.chats.flatMap((chat) => [
