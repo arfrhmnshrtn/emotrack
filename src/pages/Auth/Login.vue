@@ -65,22 +65,12 @@ const handleLogin = async () => {
       }),
     });
 
-    // const { data, status } = await Http.request({
-    //   method: "POST",
-    //   url: "http://202.10.35.143:3000/api/auth/login",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   data: {
-    //     email: email.value,
-    //     password: password.value,
-    //   },
-    // });
-
     const result = await response.json();
 
     if (!response.ok) {
-      errors.value.general = data.message || "Login gagal";
+      errors.value.general =
+        result.message || "Login gagal. Silakan coba lagi.";
+      loading.value = false;
       return;
     }
 
