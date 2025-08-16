@@ -3,63 +3,113 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import Loading from "../../components/Loading.vue";
 
-const router = useRouter();
+// Constants
+const API_URL = "http://202.10.35.143:3000/api/auth/register";
 
-const username = ref("");
-const name = ref("");
-const date = ref(""); // format: YYYY-MM-DD
-const email = ref("");
-const password = ref("");
-const confirmPassword = ref("");
-const role = ref(""); // atau "keluarga"
-const hpht = ref(""); // contoh tanggal HPHT (jika role = ibu_hamil)
-const acceptTerms = ref(true);
+// Refs
+const router = useRouter();
+const loading = ref(false);
 const errorText = ref("");
 
-const loading = ref(false);
+// Form fields
+const formData = ref({
+  username: "",
+  name: "",
+  date: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+  role: "",
+  hpht: "",
+  acceptTerms: true,
+});
 
+// Validation rules
+const validationRules = {
+  username: (value) => !!value || "Username harus diisi",
+  name: (value) => !!value || "Nama harus diisi",
+  date: (value) => !!value || "Tanggal lahir harus diisi",
+  email: (value) => {
+    if (!value) return "Email harus diisi";
+    if (!/^\S+@\S+\.\S+$/.test(value)) return "Format email tidak valid";
+    return true;
+  },
+  password: (value) => {
+    if (!value) return "Password harus diisi";
+    if (value.length < 6) return "Password minimal 6 karakter";
+    return true;
+  },
+  confirmPassword: (value, { password }) => {
+    if (!value) return "Konfirmasi password harus diisi";
+    if (value !== password) return "Password tidak cocok";
+    return true;
+  },
+  role: (value) => !!value || "Status akun harus dipilih",
+  hpht: (value, { role }) => {
+    if (role === "ibu_hamil" && !value) return "HPHT harus diisi";
+    return true;
+  },
+  acceptTerms: (value) => value || "Anda harus menyetujui syarat dan ketentuan",
+};
+
+// Validate form
+const validateForm = () => {
+  errorText.value = "";
+  let isValid = true;
+
+  for (const [field, rule] of Object.entries(validationRules)) {
+    const value = formData.value[field];
+    const result =
+      typeof rule === "function" ? rule(value, formData.value) : rule;
+
+    if (result !== true) {
+      errorText.value = result;
+      isValid = false;
+      break;
+    }
+  }
+
+  return isValid;
+};
+
+// Handle registration
 const handleRegister = async () => {
-  loading.value = true;
-
-  if (!acceptTerms.value) {
-    alert("Anda harus menyetujui Syarat dan Ketentuan.");
+  if (!validateForm()) return;
+  if (!formData.value.acceptTerms) {
+    errorText.value = "Anda harus menyetujui syarat dan ketentuan";
     return;
   }
 
-  const data = {
-    username: username.value,
-    name: name.value,
-    date: date.value,
-    email: email.value,
-    password: password.value,
-    role: role.value,
-    hpht: role.value === "ibu_hamil" ? hpht.value : null,
-  };
+  loading.value = true;
 
   try {
-    const response = await fetch(
-      "http://202.10.35.143:3000/api/auth/register",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      }
-    );
+    const payload = {
+      username: formData.value.username,
+      name: formData.value.name,
+      date: formData.value.date,
+      email: formData.value.email,
+      password: formData.value.password,
+      role: formData.value.role,
+      hpht: formData.value.role === "ibu_hamil" ? formData.value.hpht : null,
+    };
+
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
 
     const result = await response.json();
 
     if (!response.ok) {
-      // alert(result.message || "Gagal mendaftar");
-      errorText.value = result.message || "Gagal mendaftar";
-      console.error(result.message || "Gagal mendaftar");
-    } else {
-      // alert("Registrasi berhasil!");
-      localStorage.setItem("pending_email", email.value);
-      router.push("/verify-register");
+      throw new Error(result.message || "Gagal mendaftar");
     }
+
+    localStorage.setItem("pending_email", formData.value.email);
+    router.push("/verify-register");
   } catch (error) {
-    console.error(error);
-    // alert("Terjadi kesalahan saat registrasi");
+    errorText.value = error.message;
+    console.error("Registration error:", error);
   } finally {
     loading.value = false;
   }
@@ -73,14 +123,16 @@ const handleRegister = async () => {
         Buat Akun
       </h1>
       <form class="space-y-4" @submit.prevent="handleRegister">
+        <!-- Username Field -->
         <div>
           <label
             for="username"
             class="block mb-1 text-sm font-medium text-gray-700"
-            >Username</label
           >
+            Username
+          </label>
           <input
-            v-model="username"
+            v-model="formData.username"
             type="text"
             id="username"
             required
@@ -89,12 +141,16 @@ const handleRegister = async () => {
           />
         </div>
 
+        <!-- Name Field -->
         <div>
-          <label for="nama" class="block mb-1 text-sm font-medium text-gray-700"
-            >Nama</label
+          <label
+            for="nama"
+            class="block mb-1 text-sm font-medium text-gray-700"
           >
+            Nama
+          </label>
           <input
-            v-model="name"
+            v-model="formData.name"
             type="text"
             id="nama"
             required
@@ -103,14 +159,16 @@ const handleRegister = async () => {
           />
         </div>
 
+        <!-- Date of Birth Field -->
         <div>
           <label
             for="tanggal-lahir"
             class="block mb-1 text-sm font-medium text-gray-700"
-            >Tanggal Lahir</label
           >
+            Tanggal Lahir
+          </label>
           <input
-            v-model="date"
+            v-model="formData.date"
             type="date"
             id="tanggal-lahir"
             required
@@ -118,14 +176,16 @@ const handleRegister = async () => {
           />
         </div>
 
+        <!-- Account Status Field -->
         <div>
           <label
             for="status-akun"
             class="block mb-1 text-sm font-medium text-gray-700"
-            >Status Akun</label
           >
+            Status Akun
+          </label>
           <select
-            v-model="role"
+            v-model="formData.role"
             id="status-akun"
             required
             class="w-full rounded-lg p-2.5 text-sm text-gray-900 shadow"
@@ -136,27 +196,33 @@ const handleRegister = async () => {
           </select>
         </div>
 
-        <div v-if="role === 'ibu_hamil'">
-          <label for="hpht" class="block mb-1 text-sm font-medium text-gray-700"
-            >Hari Pertama Haid Terakhir (HPHT)</label
+        <!-- HPHT Field (Conditional) -->
+        <div v-if="formData.role === 'ibu_hamil'">
+          <label
+            for="hpht"
+            class="block mb-1 text-sm font-medium text-gray-700"
           >
+            Hari Pertama Haid Terakhir (HPHT)
+          </label>
           <input
-            v-model="hpht"
+            v-model="formData.hpht"
             type="date"
             id="hpht"
-            required
+            :required="formData.role === 'ibu_hamil'"
             class="w-full rounded-lg p-2.5 text-sm text-gray-900 shadow"
           />
         </div>
 
+        <!-- Email Field -->
         <div>
           <label
             for="email"
             class="block mb-1 text-sm font-medium text-gray-700"
-            >Email</label
           >
+            Email
+          </label>
           <input
-            v-model="email"
+            v-model="formData.email"
             type="email"
             id="email"
             required
@@ -165,14 +231,16 @@ const handleRegister = async () => {
           />
         </div>
 
+        <!-- Password Field -->
         <div>
           <label
             for="password"
             class="block mb-1 text-sm font-medium text-gray-700"
-            >Password</label
           >
+            Password
+          </label>
           <input
-            v-model="password"
+            v-model="formData.password"
             type="password"
             id="password"
             required
@@ -181,14 +249,16 @@ const handleRegister = async () => {
           />
         </div>
 
+        <!-- Confirm Password Field -->
         <div>
           <label
             for="confirm-password"
             class="block mb-1 text-sm font-medium text-gray-700"
-            >Konfirmasi Password</label
           >
+            Konfirmasi Password
+          </label>
           <input
-            v-model="confirmPassword"
+            v-model="formData.confirmPassword"
             type="password"
             id="confirm-password"
             required
@@ -197,9 +267,10 @@ const handleRegister = async () => {
           />
         </div>
 
+        <!-- Terms Checkbox -->
         <div class="flex items-center">
           <input
-            v-model="acceptTerms"
+            v-model="formData.acceptTerms"
             id="terms"
             type="checkbox"
             class="w-4 h-4 text-pink-500 bg-gray-100 border-gray-300 rounded"
@@ -207,12 +278,13 @@ const handleRegister = async () => {
           />
           <label for="terms" class="ml-2 text-sm text-gray-600">
             Saya menerima
-            <a href="#" class="text-pink-500 hover:underline"
-              >Syarat dan Ketentuan</a
-            >
+            <a href="#" class="text-pink-500 hover:underline">
+              Syarat dan Ketentuan
+            </a>
           </label>
         </div>
 
+        <!-- Error Message -->
         <p
           v-if="errorText"
           class="text-red-500 text-sm mt-2 text-center animate-bounce"
@@ -220,6 +292,7 @@ const handleRegister = async () => {
           {{ errorText }}
         </p>
 
+        <!-- Submit Button -->
         <button
           type="submit"
           class="w-full bg-pink-500 hover:bg-pink-600 text-white font-semibold rounded-lg px-5 py-2.5 text-sm"
@@ -227,11 +300,12 @@ const handleRegister = async () => {
           Buat Akun
         </button>
 
+        <!-- Login Link -->
         <p class="text-sm text-center text-gray-600">
           Sudah punya akun?
-          <router-link to="/" class="text-pink-500 hover:underline"
-            >Login di sini</router-link
-          >
+          <router-link to="/" class="text-pink-500 hover:underline">
+            Login di sini
+          </router-link>
         </p>
       </form>
       <Loading v-if="loading" />

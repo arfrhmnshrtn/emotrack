@@ -23,6 +23,8 @@ import DetailJurnal from "../pages/Home/Jurnal/DetailJurnal.vue";
 import DetailGizi from "../pages/Home/Gizi/DetailGizi.vue";
 import InputNewPassword from "../pages/Auth/InputNewPassword.vue";
 import viewGizi from "../pages/Home/Gizi/viewGizi.vue";
+import EditProfile from "../pages/Home/Profile/EditProfile.vue";
+import Bantuan from "../pages/Home/Profile/Bantuan.vue";
 
 const routes = [
   { path: "/", name: "Login", component: Login, meta: { public: true } },
@@ -52,6 +54,8 @@ const routes = [
   { path: "/detailjurnal/:id", name: "detailJurnal", component: DetailJurnal },
   { path: "/viewgizi", name: "viewGizi", component: viewGizi },
   { path: "/detailgizi/:id", name: "DetailGizi", component: DetailGizi },
+  { path: "/edit-profile", name: "EditProfile", component: EditProfile },
+  { path: "/bantuan", name: "Bantuan", component: Bantuan },
   {
     path: "/verify-register",
     name: "VerifyRegister",
@@ -80,17 +84,16 @@ const router = createRouter({
 // Guard: Cegah akses halaman private jika belum login
 router.beforeEach((to, from, next) => {
   // Cek apakah ada token atau user data di localStorage
-  const token = localStorage.getItem("token");
   const user = localStorage.getItem("user");
 
-  // Jika mencoba mengakses halaman terproteksi dan tidak ada token/user
-  if (!to.meta.public && !token && !user) {
-    return next({ name: "Login" });
+  // ✅ Kalau user buka "/" (Login) tapi sudah punya token → lempar ke Dashboard
+  if (to.name === "Login" && user) {
+    return next({ name: "Home" });
   }
 
-  // Jika sudah login tapi mencoba mengakses halaman login/register
-  if ((to.name === "Login" || to.name === "Register") && token && user) {
-    return next({ name: "Home" }); // atau halaman default setelah login
+  // Jika mencoba mengakses halaman terproteksi dan tidak ada token/user
+  if (!to.meta.public && !user) {
+    return next({ name: "Login" });
   }
 
   next();

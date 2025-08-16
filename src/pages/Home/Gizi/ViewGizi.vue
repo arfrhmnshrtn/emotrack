@@ -2,6 +2,7 @@
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import Loading from "../../../components/Loading.vue";
+import { marked } from "marked";
 
 const loading = ref(false);
 
@@ -11,6 +12,15 @@ const allGizi = ref([]);
 // Fungsi kembali
 const goBack = () => {
   router.back();
+};
+
+const formatMessage = (text) => {
+  const cleaned = (text || "")
+    .replace(/^\*\s+/gm, "- ") // bintang jadi dash list
+    .replace(/\n{2,}/g, "\n\n"); // konsisten newline
+
+  const html = marked.parse(cleaned);
+  return html;
 };
 
 // Ambil ID user dari localStorage
@@ -140,10 +150,10 @@ onMounted(() => {
         </p>
 
         <div class="bg-blue-100 rounded-lg p-4">
-          <p class="text-sm text-blue-800">
+          <div class="text-sm text-blue-800">
             <strong class="font-semibold">Rekomendasi AI:</strong>
-            {{ cutText(gizi.response) }}
-          </p>
+            <p v-html="formatMessage(cutText(gizi.response))"></p>
+          </div>
         </div>
       </div>
     </router-link>

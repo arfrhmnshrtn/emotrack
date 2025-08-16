@@ -94,7 +94,10 @@ onMounted(() => {
       <h2 class="text-lg font-semibold text-gray-700 mb-3">Hasil</h2>
       <div class="bg-white rounded-xl p-5 shadow-sm space-y-4">
         <!-- Link Data Gizi -->
-        <router-link to="/viewGizi" class="block bg-green-300 rounded-2xl hover:bg-green-400">
+        <router-link
+          to="/viewGizi"
+          class="block bg-green-300 rounded-2xl hover:bg-green-400"
+        >
           <div
             class="flex items-center justify-between px-3 py-2 rounded-md transition"
           >

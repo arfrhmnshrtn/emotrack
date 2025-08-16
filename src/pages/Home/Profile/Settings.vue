@@ -1,96 +1,58 @@
-<template>
-  <div class="max-w-md mx-auto mt-10 p-6 bg-white rounded-xl shadow space-y-6">
-    <h1 class="text-2xl font-bold text-center text-pink-600">
-      Pengaturan Profil
-    </h1>
-
-    <!-- Foto Profil -->
-    <div class="flex flex-col items-center space-y-2">
-      <img
-        :src="preview || defaultPhoto"
-        alt="Foto Profil"
-        class="w-24 h-24 rounded-full object-cover border"
-      />
-      <input
-        type="file"
-        accept="image/*"
-        @change="handlePhoto"
-        class="text-sm"
-      />
-    </div>
-
-    <!-- Form Input -->
-    <form @submit.prevent="saveSettings" class="space-y-4">
-      <div>
-        <label class="block text-sm font-medium text-gray-700"
-          >Nama Lengkap</label
-        >
-        <input
-          v-model="form.name"
-          type="text"
-          class="w-full border px-4 py-2 rounded-lg focus:outline-pink-500"
-          placeholder="Nama Anda"
-        />
-      </div>
-
-      <div>
-        <label class="block text-sm font-medium text-gray-700">Email</label>
-        <input
-          v-model="form.email"
-          type="email"
-          class="w-full border px-4 py-2 rounded-lg focus:outline-pink-500"
-          placeholder="contoh@email.com"
-        />
-      </div>
-
-      <div>
-        <label class="block text-sm font-medium text-gray-700"
-          >HPHT (Hari Pertama Haid Terakhir)</label
-        >
-        <input
-          v-model="form.hpht"
-          type="date"
-          class="w-full border px-4 py-2 rounded-lg focus:outline-pink-500"
-        />
-      </div>
-
-      <!-- Tombol Simpan -->
-      <button
-        type="submit"
-        class="w-full bg-pink-500 text-white py-2 rounded-lg hover:bg-pink-600 transition"
-      >
-        Simpan Perubahan
-      </button>
-    </form>
-  </div>
-</template>
-
 <script setup>
-import { ref } from "vue";
-
-const defaultPhoto = "https://via.placeholder.com/100x100.png?text=Foto";
-const preview = ref(null);
-
-const form = ref({
-  name: "",
-  email: "",
-  hpht: "",
-  photo: null,
-});
-
-const handlePhoto = (e) => {
-  const file = e.target.files[0];
-  if (file) {
-    form.value.photo = file;
-    preview.value = URL.createObjectURL(file);
-  }
-};
-
-const saveSettings = () => {
-  // Simulasi kirim data, bisa diganti dengan fetch/axios
-  console.log("Data disimpan:", form.value);
-
-  // TODO: Kirim ke server pakai fetch/axios + FormData
-  alert("Pengaturan berhasil disimpan!");
+import { useRouter } from "vue-router";
+const router = useRouter();
+const logout = () => {
+  localStorage.removeItem("user");
+  router.push("/");
 };
 </script>
+
+<template>
+  <div class="max-w-2xl mx-auto p-6">
+    <div class="p-6">
+      <!-- Judul -->
+      <h1 class="text-2xl font-semibold text-gray-800 mb-2 text-center">
+        Pengaturan
+      </h1>
+      <p class="text-gray-500 mb-6">
+        Kelola akun, keamanan, dan preferensi aplikasi Anda.
+      </p>
+
+      <!-- List Pengaturan -->
+      <ul class="space-y-3">
+        <!-- Edit Profil -->
+        <li>
+          <router-link
+            to="/edit-profile"
+            class="flex items-center justify-between px-4 py-3 rounded-xl border border-gray-200 hover:bg-pink-50 hover:border-pink-300 transition"
+          >
+            <span class="text-gray-700 font-medium">Edit Profil</span>
+            <span class="text-blue-500 text-sm">›</span>
+          </router-link>
+        </li>
+
+        <!-- Ubah Kata Sandi -->
+        <li>
+          <router-link
+            to="/profile/change-password"
+            class="flex items-center justify-between px-4 py-3 rounded-xl border border-gray-200 hover:bg-pink-50 hover:border-pink-300 transition"
+          >
+            <span class="text-gray-700 font-medium">Ubah Kata Sandi</span>
+            <span class="text-blue-500 text-sm">›</span>
+          </router-link>
+        </li>
+
+        <!-- Keluar -->
+        <li>
+          <button
+            @click="logout"
+            class="flex items-center justify-between w-full px-4 py-3 rounded-xl border border-gray-200 hover:bg-red-50 hover:border-red-300 transition"
+          >
+            <span class="text-red-600 font-medium">Keluar</span>
+            <span class="text-red-500 text-sm">›</span>
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</template>

@@ -61,7 +61,7 @@ onMounted(() => {
 
     <!-- Name -->
     <h2 class="text-xl font-semibold text-pink-700">
-      Halo, {{ dataUser.name }} 🌸
+      Halo, {{ dataUser.username }} 🌸
     </h2>
     <p class="text-sm text-gray-500 mb-6">Profil pengguna & pengaturan akun</p>
 
@@ -94,16 +94,18 @@ onMounted(() => {
         </button>
       </router-link>
 
-      <button
-        class="w-full bg-white flex items-center gap-3 px-4 py-3 rounded-xl shadow hover:bg-pink-100 transition"
-      >
-        <Icon icon="mdi:help-circle-outline" class="text-pink-500 w-5 h-5" />
-        <span>Bantuan</span>
-      </button>
+      <router-link to="/bantuan" class="mb-5">
+        <button
+          class="w-full bg-white flex mb-2 items-center gap-3 px-4 py-3 rounded-xl shadow hover:bg-pink-100 transition"
+        >
+          <Icon icon="mdi:cog" class="text-pink-500 w-5 h-5" />
+          <span>Pusat Bantuan</span>
+        </button>
+      </router-link>
 
       <!-- Tombol Logout -->
       <button
-        class="w-full bg-pink-500 text-white px-4 py-3 rounded-xl shadow hover:bg-pink-600 transition"
+        class="w-full bg-pink-500 text-white px-4 py-3 mt-8 rounded-xl shadow hover:bg-pink-600 transition"
         @click="showConfirm = true"
       >
         <Icon icon="mdi:logout" class="w-5 h-5 inline mr-2" />
@@ -116,7 +118,9 @@ onMounted(() => {
       v-if="showConfirm"
       class="fixed inset-0 bg-opacity-50 flex items-center justify-center z-50"
     >
-      <div class="bg-white p-6 rounded-xl shadow-xl text-center">
+      <div
+        class="bg-white flex flex-col justify-center h-1/4 w-full m-8 p-6 rounded-xl shadow-xl text-center"
+      >
         <p class="text-lg mb-4 text-gray-800">Yakin ingin keluar?</p>
         <div class="flex justify-center gap-4">
           <button
