@@ -3,14 +3,12 @@ import SplashScreen from "./SplashScreen.vue";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import Loading from "../../components/Loading.vue";
-// import { Http } from "@capacitor/http";
-// import { Icon } from "@iconify/vue";
 
+// refs
 const showPassword = ref(false);
 const email = ref("");
 const password = ref("");
 const splash = ref(true);
-const router = useRouter();
 const loading = ref(false);
 const errors = ref({
   email: "",
@@ -18,43 +16,61 @@ const errors = ref({
   general: "",
 });
 
-const validateForm = () => {
-  let isValid = true;
+// constants
+const API_URL = "http://202.10.35.143:3000/api/auth/login";
+const SPLASH_TIMEOUT = 1000;
+const MIN_PASSWORD_LENGTH = 6;
 
-  // Reset errors
+// router
+const router = useRouter();
+
+// validate helpers
+const validateEmail = () => {
+  if (!email.value) {
+    errors.value.email = "Email harus diisi";
+    return false;
+  }
+
+  if (!/^\S+@\S+\.\S+$/.test(email.value)) {
+    errors.value.email = "Format email tidak valid";
+    return false;
+  }
+
+  return true;
+};
+
+const validatePassword = () => {
+  if (!password.value) {
+    errors.value.password = "Password harus diisi";
+    return false;
+  }
+
+  if (password.value.length < MIN_PASSWORD_LENGTH) {
+    errors.value.password = `Password minimal ${MIN_PASSWORD_LENGTH} karakter`;
+    return false;
+  }
+
+  return true;
+};
+
+const validate = () => {
+  // reset errors
   errors.value = {
     email: "",
     password: "",
     general: "",
   };
 
-  // Email validation
-  if (!email.value) {
-    errors.value.email = "Email harus diisi";
-    isValid = false;
-  } else if (!/^\S+@\S+\.\S+$/.test(email.value)) {
-    errors.value.email = "Format email tidak valid";
-    isValid = false;
-  }
+  const isEmailValid = validateEmail();
+  const isPasswordValid = validatePassword();
 
-  // Password validation
-  if (!password.value) {
-    errors.value.password = "Password harus diisi";
-    isValid = false;
-  } else if (password.value.length < 6) {
-    errors.value.password = "Password minimal 6 karakter";
-    isValid = false;
-  }
-
-  return isValid;
+  return isEmailValid && isPasswordValid;
 };
 
-const handleLogin = async () => {
-  if (!validateForm()) return;
-  loading.value = true;
-
+// API call
+const loginUser = async () => {
   try {
-    const response = await fetch("http://202.10.35.143:3000/api/auth/login", {
+    const response = await fetch(API_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -64,34 +80,52 @@ const handleLogin = async () => {
         password: password.value,
       }),
     });
-
     const result = await response.json();
 
     if (!response.ok) {
       errors.value.general =
         result.message || "Login gagal. Silakan coba lagi.";
-      loading.value = false;
-      return;
+      throw new Error(errors.value.general);
     }
 
-    localStorage.setItem("user", JSON.stringify(result.user));
+    if (!result.user) {
+      errors.value.general = "Login gagal. Silakan coba lagi.";
+      throw new Error(errors.value.general);
+    }
+
+    return result;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// main handleLogin
+const handleLogin = async () => {
+  if (!validate()) return;
+
+  loading.value = true;
+
+  try {
+    const { user } = await loginUser();
+    localStorage.setItem("user", JSON.stringify(user));
     router.push("/dashboard");
   } catch (error) {
-    console.error(error);
-    errors.value.general = "Terjadi kesalahan saat menghubungi server.";
+    errors.value.general =
+      error.message || "Terjadi kesalahan saat menghubungi server.";
   } finally {
     loading.value = false;
   }
 };
 
-function showSplash() {
+// spalsh screen
+const hideSplash = () => {
   setTimeout(() => {
     splash.value = false;
-  }, 1000);
-}
+  }, SPLASH_TIMEOUT);
+};
 
 onMounted(() => {
-  showSplash();
+  hideSplash();
 });
 </script>
 
